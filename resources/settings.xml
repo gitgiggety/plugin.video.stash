@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<settings>
+    <category>
+        <setting label="30000" type="text" id="base_url" default="http://localhost:9999/"/>
+        <setting label="1014" type="text" id="username" default=""/>
+        <setting label="733" type="text" id="password" option="hidden" default=""/>
+    </category>
+</settings>
