@@ -5,6 +5,7 @@ import xbmcaddon
 import xbmcgui
 import xbmcplugin
 from stash_interface import StashInterface
+import criterion_parser
 
 _URL = sys.argv[0]
 _HANDLE = int(sys.argv[1])
@@ -24,11 +25,21 @@ def list_root():
     xbmcplugin.setPluginCategory(_HANDLE, 'Stash')
     xbmcplugin.setContent(_HANDLE, 'videos')
 
+    saved_filters = client.findSavedFilters('SCENES')
+
+    for saved_filter in saved_filters:
+        item = xbmcgui.ListItem(label=saved_filter['name'])
+        filter_data = json.loads(saved_filter['filter'])
+        criterion_json = json.dumps(criterion_parser.parse(filter_data['c']))
+
+        url = get_url(browse='scenes', title=saved_filter['name'], criterion=criterion_json, sort_field=filter_data['sortby'], sort_dir=filter_data['disp'])
+        xbmcplugin.addDirectoryItem(_HANDLE, url, item, True)
+
     for type in browse_types:
         item = xbmcgui.ListItem(label=browse_types[type])
         url = get_url(browse=type)
         xbmcplugin.addDirectoryItem(_HANDLE, url, item, True)
-    xbmcplugin.addSortMethod(_HANDLE, xbmcplugin.SORT_METHOD_LABEL_IGNORE_THE)
+    xbmcplugin.addSortMethod(_HANDLE, xbmcplugin.SORT_METHOD_NONE)
     xbmcplugin.endOfDirectory(_HANDLE)
 
 def browse(params):
@@ -45,11 +56,13 @@ def browse_scenes(params):
     title = params['title'] if 'title' in params else 'Scenes'
 
     criterion = json.loads(params['criterion']) if 'criterion' in params else {}
+    sort_field = params['sort_field'] if 'sort_field' in params else 'title'
+    sort_dir = params['sort_dir'] if 'sort_dir' in params else '0'
 
     xbmcplugin.setPluginCategory(_HANDLE, title)
     xbmcplugin.setContent(_HANDLE, 'videos')
 
-    (count, scenes) = client.findScenes(criterion)
+    (count, scenes) = client.findScenes(criterion, sort_field, sort_dir)
     for scene in scenes:
         item = xbmcgui.ListItem(label=scene['title'])
         item.setInfo('video', {'title': scene['title'],
@@ -64,7 +77,7 @@ def browse_scenes(params):
         url = get_url(play=scene['id'])
         xbmcplugin.addDirectoryItem(_HANDLE, url, item, False)
 
-    xbmcplugin.addSortMethod(_HANDLE, xbmcplugin.SORT_METHOD_LABEL_IGNORE_THE)
+    xbmcplugin.addSortMethod(_HANDLE, xbmcplugin.SORT_METHOD_NONE)
     xbmcplugin.endOfDirectory(_HANDLE)
 
 def browse_performers(params):

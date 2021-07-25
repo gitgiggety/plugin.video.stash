@@ -33,7 +33,7 @@ class StashInterface:
         else:
             raise Exception("GraphQL query failed:{} - {}. Query: {}. Variables: {}".format(response.status_code, response.content, query, variables))
 
-    def findScenes(self, scene_filter = None):
+    def findScenes(self, scene_filter = None, sort_field = 'title', sort_dir = 0):
         query = """
 query findScenes($scene_filter: SceneFilterType, $filter: FindFilterType!) {
   findScenes(scene_filter: $scene_filter, filter: $filter) {
@@ -61,7 +61,8 @@ query findScenes($scene_filter: SceneFilterType, $filter: FindFilterType!) {
 
         variables = {'filter': {
             'per_page': -1,
-            'sort': 'title'
+            'sort': sort_field,
+            'direction': 'DESC' if sort_dir == 1 else 'ASC'
         }}
 
         if scene_filter != None:
@@ -177,3 +178,19 @@ query findStudios($studio_filter: StudioFilterType, $filter: FindFilterType!) {
         result = self.__callGraphQL(query, variables)
 
         return (result["findStudios"]["count"], result["findStudios"]["studios"])
+
+    def findSavedFilters(self, mode):
+        query = """
+query findSavedFilters($mode: FilterMode!) {
+    findSavedFilters(mode: $mode) {
+        name
+        filter
+    }
+}
+"""
+
+        variables = {'mode': mode}
+
+        result = self.__callGraphQL(query, variables)
+
+        return result['findSavedFilters']
