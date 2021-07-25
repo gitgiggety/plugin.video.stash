@@ -16,3 +16,7 @@ msgstr ""
 msgctxt "#30000"
 msgid "Base URL"
 msgstr ""
+
+msgctxt "#30001"
+msgid "API Key"
+msgstr ""

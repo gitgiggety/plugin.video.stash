@@ -1,6 +1,7 @@
 import json
 import sys
 from urllib.parse import urlencode, parse_qsl
+import urllib.parse
 import xbmcaddon
 import xbmcgui
 import xbmcplugin
@@ -72,7 +73,8 @@ def browse_scenes(params):
             'duration': int(scene['file']['duration']),
             'studio': scene['studio']['name']})
 
-        item.setArt({'thumb': scene['paths']['screenshot'], 'fanart': scene['paths']['screenshot']})
+        screenshot = add_api_key(scene['paths']['screenshot'])
+        item.setArt({'thumb': screenshot, 'fanart': screenshot})
         item.setProperty('IsPlayable', 'true')
         url = get_url(play=scene['id'])
         xbmcplugin.addDirectoryItem(_HANDLE, url, item, False)
@@ -91,7 +93,7 @@ def browse_performers(params):
             'mediatype': 'video',
             'plot': performer['details']})
 
-        item.setArt({'thumb': performer['image_path']})
+        item.setArt({'thumb': add_api_key(performer['image_path'])})
         criterion = {'performers': {'modifier': 'INCLUDES_ALL', 'value': [performer['id']]}}
         url = get_url(browse='scenes', criterion=json.dumps(criterion), title=performer['name'])
         xbmcplugin.addDirectoryItem(_HANDLE, url, item, True)
@@ -109,7 +111,7 @@ def browse_tags(params):
         item.setInfo('video', {'title': tag['name'],
             'mediatype': 'video'})
 
-        item.setArt({'thumb': tag['image_path']})
+        item.setArt({'thumb': add_api_key(tag['image_path'])})
         criterion = {'tags': {'modifier': 'INCLUDES_ALL', 'value': [tag['id']]}}
         url = get_url(browse='scenes', criterion=json.dumps(criterion), title=tag['name'])
         xbmcplugin.addDirectoryItem(_HANDLE, url, item, True)
@@ -128,7 +130,7 @@ def browse_studios(params):
             'mediatype': 'video',
             'plot': studio['details']})
 
-        item.setArt({'thumb': studio['image_path']})
+        item.setArt({'thumb': add_api_key(studio['image_path'])})
         criterion = {'studios': {'modifier': 'INCLUDES_ALL', 'value': [studio['id']], 'depth': 0}}
         url = get_url(browse='scenes', criterion=json.dumps(criterion), title=studio['name'])
         xbmcplugin.addDirectoryItem(_HANDLE, url, item, True)
@@ -152,6 +154,13 @@ def router(paramstring):
     else:
         list_root()
 
+def add_api_key(url):
+    if api_key:
+        url = "{}{}apikey={}".format(url, '&' if '?' in url else '?', urllib.parse.quote(api_key))
+
+    return url
+
 if __name__ == '__main__':
-    client = StashInterface(_ADDON.getSetting('base_url'))
+    api_key = _ADDON.getSetting('api_key')
+    client = StashInterface(_ADDON.getSetting('base_url'), api_key)
     router(sys.argv[2][1:])

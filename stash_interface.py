@@ -9,10 +9,11 @@ class StashInterface:
             "Connection": "keep-alive",
             }
 
-    def __init__(self, url):
+    def __init__(self, url, api_key):
         if not url.endswith('/graphql'):
             url = "{0}/graphql".format(url.rstrip("/"))
 
+        self.headers['ApiKey'] = api_key
         self.url = url
 
     def __callGraphQL(self, query, variables = None):
