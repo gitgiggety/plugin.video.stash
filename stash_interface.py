@@ -48,6 +48,10 @@ query findScenes($scene_filter: SceneFilterType, $filter: FindFilterType!) {
       }
       file {
         duration
+        video_codec
+        audio_codec
+        width
+        height
       }
       studio {
         name

@@ -73,6 +73,11 @@ def browse_scenes(params):
             'duration': int(scene['file']['duration']),
             'studio': scene['studio']['name']})
 
+        item.addStreamInfo('video', {'codec': scene['file']['video_codec'],
+            'width': scene['file']['width'],
+            'height': scene['file']['height'],
+            'duration': int(scene['file']['duration'])})
+
         screenshot = add_api_key(scene['paths']['screenshot'])
         item.setArt({'thumb': screenshot, 'fanart': screenshot})
         item.setProperty('IsPlayable', 'true')
