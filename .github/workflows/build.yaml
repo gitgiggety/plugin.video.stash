@@ -1,0 +1,26 @@
+on:
+  push:
+    branches:
+      - '**'
+  pull_request:
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v1
+      - name: Set addon version
+        run: sed --in-place '/<addon/ s/version="[^"]*"/version="'$(git rev-parse --short "$GITHUB_SHA")'"/' addon.xml
+      - name: Create addon zip
+        run: |
+          mkdir -p /tmp/plugin.video.stash
+          rsync -a addon.xml addon.py resources /tmp/plugin.video.stash
+          cd /tmp/
+          zip -r plugin.video.stash.zip plugin.video.stash/
+      - name: Upload
+        uses: actions/upload-artifact@v2
+        with:
+          name: plugin.video.stash.zip
+          path: /tmp/plugin.video.stash.zip
