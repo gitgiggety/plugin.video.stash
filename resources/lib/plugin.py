@@ -1,12 +1,12 @@
-import json
 import sys
+import json
 from urllib.parse import urlencode, parse_qsl
 import urllib.parse
 import xbmcaddon
 import xbmcgui
 import xbmcplugin
-from stash_interface import StashInterface
-import criterion_parser
+import resources.lib.criterion_parser as criterion_parser
+from resources.lib.stash_interface import StashInterface
 
 _URL = sys.argv[0]
 _HANDLE = int(sys.argv[1])
@@ -18,6 +18,13 @@ browse_types = {
         'tags': 'Tags',
         'studios': 'Studios',
         }
+
+def run():
+    global api_key
+    global client
+    api_key = _ADDON.getSetting('api_key')
+    client = StashInterface(_ADDON.getSetting('base_url'), api_key)
+    router(sys.argv[2][1:])
 
 def get_url(**kwargs):
     return '{}?{}'.format(_URL, urlencode(kwargs))
@@ -165,7 +172,3 @@ def add_api_key(url):
 
     return url
 
-if __name__ == '__main__':
-    api_key = _ADDON.getSetting('api_key')
-    client = StashInterface(_ADDON.getSetting('base_url'), api_key)
-    router(sys.argv[2][1:])
