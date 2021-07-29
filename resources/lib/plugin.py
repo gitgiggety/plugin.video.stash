@@ -78,12 +78,19 @@ def browse_scenes(params):
             'plot': scene['details'],
             'cast': list(map(lambda p: p['name'], scene['performers'])),
             'duration': int(scene['file']['duration']),
-            'studio': scene['studio']['name']})
+            'studio': scene['studio']['name'],
+            'userrating': scene['rating'] * 2 if 'rating' in scene and scene['rating'] != None else 0, # * 2 because rating is 1 to 5 and Kodi uses 1 to 10
+            'premiered': scene['date'],
+            'tags': list(map(lambda t: t['name'], scene['tags'])),
+            'dateadded': scene['created_at']
+        })
 
         item.addStreamInfo('video', {'codec': scene['file']['video_codec'],
             'width': scene['file']['width'],
             'height': scene['file']['height'],
             'duration': int(scene['file']['duration'])})
+
+        item.addStreamInfo('audio', {'codec': scene['file']['audio_codec']})
 
         screenshot = add_api_key(scene['paths']['screenshot'])
         item.setArt({'thumb': screenshot, 'fanart': screenshot})

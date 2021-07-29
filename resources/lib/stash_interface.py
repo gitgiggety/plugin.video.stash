@@ -43,6 +43,9 @@ query findScenes($scene_filter: SceneFilterType, $filter: FindFilterType!) {
       id
       title
       details
+      rating
+      date
+      created_at
       paths {
         screenshot
       }
@@ -57,6 +60,9 @@ query findScenes($scene_filter: SceneFilterType, $filter: FindFilterType!) {
         name
       }
       performers {
+        name
+      }
+      tags {
         name
       }
     }
