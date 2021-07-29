@@ -1,0 +1,26 @@
+on:
+  release:
+    types: [published]
+
+jobs:
+  build-image:
+    name: Update repository package
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          repository: gitgiggety/repository.stash
+          ref: master
+          token: ${{ secrets.RELEASE_TOKEN }}
+      - name: Setup Python
+        uses: actions/setup-python@v2
+      - name: Update package
+        run: |
+          wget -O plugin.video.stash/plugin.video.stash-${GITHUB_REF##*/v}.zip "https://github.com/gitgiggety/plugin.video.stash/releases/download/${{ github.event.release.tag_name }}/plugin.video.stash.zip"
+          python generator.py plugin.video.stash ${GITHUB_REF##*/v}
+      - name: Commit and push
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: Update plugin.video.stash to ${{ github.event.release.tag_name }}
+          file_pattern: plugin.video.stash/*.zip addons.xml*
