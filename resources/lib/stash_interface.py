@@ -205,3 +205,16 @@ query findSavedFilters($mode: FilterMode!) {
         result = self.__callGraphQL(query, variables)
 
         return result['findSavedFilters']
+
+    def sceneIncrementO(self, id):
+        query = """
+mutation sceneIncrementO($id: ID!) {
+  sceneIncrementO(id: $id)
+}
+"""
+
+        variables = {'id': id}
+
+        result = self.__callGraphQL(query, variables)
+
+        return (result["sceneIncrementO"])

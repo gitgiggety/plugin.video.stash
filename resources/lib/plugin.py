@@ -2,6 +2,7 @@ import sys
 import json
 from urllib.parse import urlencode, parse_qsl
 import urllib.parse
+import xbmc
 import xbmcaddon
 import xbmcgui
 import xbmcplugin
@@ -92,6 +93,10 @@ def browse_scenes(params):
 
         item.addStreamInfo('audio', {'codec': scene['file']['audio_codec']})
 
+        menu = []
+        menu.append(('Increment O-counter', 'RunPlugin({})'.format(get_url(incrementO='', scene=scene['id']))))
+        item.addContextMenuItems(menu)
+
         screenshot = add_api_key(scene['paths']['screenshot'])
         item.setArt({'thumb': screenshot, 'fanart': screenshot})
         item.setProperty('IsPlayable', 'true')
@@ -162,14 +167,22 @@ def play(params):
     item = xbmcgui.ListItem(path=scene['paths']['stream'])
     xbmcplugin.setResolvedUrl(_HANDLE, True, listitem=item)
 
+def incrementO(params):
+    if 'scene' in params:
+        oCount = client.sceneIncrementO(params['scene'])
+        xbmc.executebuiltin('Notification(Stash, O-counter updated to {})'.format(oCount))
+
+
 def router(paramstring):
-    params = dict(parse_qsl(paramstring))
+    params = dict(parse_qsl(paramstring, keep_blank_values=True))
 
     if params:
         if 'browse' in params:
             browse(params)
         elif 'play' in params:
             play(params)
+        elif 'incrementO' in params:
+            incrementO(params)
     else:
         list_root()
 
