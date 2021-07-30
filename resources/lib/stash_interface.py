@@ -206,6 +206,22 @@ query findSavedFilters($mode: FilterMode!) {
 
         return result['findSavedFilters']
 
+    def findDefaultFilter(self, mode):
+        query = """
+query findDefaultFilter($mode: FilterMode!) {
+    findDefaultFilter(mode: $mode) {
+        name
+        filter
+    }
+}
+"""
+
+        variables = {'mode': mode}
+
+        result = self.__callGraphQL(query, variables)
+
+        return result['findDefaultFilter']
+
     def sceneIncrementO(self, id):
         query = """
 mutation sceneIncrementO($id: ID!) {

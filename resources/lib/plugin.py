@@ -34,14 +34,19 @@ def list_root():
     xbmcplugin.setPluginCategory(_HANDLE, 'Stash')
     xbmcplugin.setContent(_HANDLE, 'videos')
 
+    default_filter = client.findDefaultFilter('SCENES')
+    if default_filter != None:
+        item, url = create_item_from_filter(default_filter, 'scenes', 'Default')
+        xbmcplugin.addDirectoryItem(_HANDLE, url, item, True)
+    else:
+        item = xbmcgui.ListItem(label='Default')
+        url = get_url(browse='scenes', sort_field='date')
+        xbmcplugin.addDirectoryItem(_HANDLE, url, item, True)
+
     saved_filters = client.findSavedFilters('SCENES')
 
     for saved_filter in saved_filters:
-        item = xbmcgui.ListItem(label=saved_filter['name'])
-        filter_data = json.loads(saved_filter['filter'])
-        criterion_json = json.dumps(criterion_parser.parse(filter_data['c']))
-
-        url = get_url(browse='scenes', title=saved_filter['name'], criterion=criterion_json, sort_field=filter_data['sortby'], sort_dir=filter_data['disp'])
+        item, url = create_item_from_filter(saved_filter, 'scenes')
         xbmcplugin.addDirectoryItem(_HANDLE, url, item, True)
 
     for type in browse_types:
@@ -161,6 +166,15 @@ def browse_studios(params):
 
     xbmcplugin.addSortMethod(_HANDLE, xbmcplugin.SORT_METHOD_LABEL_IGNORE_THE)
     xbmcplugin.endOfDirectory(_HANDLE)
+
+def create_item_from_filter(filter, type, override_title = None):
+    title = override_title if override_title != None else filter['name']
+    item = xbmcgui.ListItem(label=title)
+    filter_data = json.loads(filter['filter'])
+    criterion_json = json.dumps(criterion_parser.parse(filter_data['c']))
+
+    url = get_url(browse='scenes', title=title, criterion=criterion_json, sort_field=filter_data['sortby'], sort_dir=filter_data['disp'])
+    return (item, url)
 
 def play(params):
     scene = client.findScene(params['play'])
