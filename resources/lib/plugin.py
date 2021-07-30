@@ -13,11 +13,14 @@ _URL = sys.argv[0]
 _HANDLE = int(sys.argv[1])
 _ADDON = xbmcaddon.Addon()
 
+def get_localized(id):
+    return _ADDON.getLocalizedString(id)
+
 browse_types = {
-        'scenes': 'All',
-        'performers': 'Performers',
-        'tags': 'Tags',
-        'studios': 'Studios',
+        'scenes': get_localized(30002),
+        'performers': get_localized(30003),
+        'tags': get_localized(30004),
+        'studios': get_localized(30005),
         }
 
 def run():
@@ -36,10 +39,10 @@ def list_root():
 
     default_filter = client.findDefaultFilter('SCENES')
     if default_filter != None:
-        item, url = create_item_from_filter(default_filter, 'scenes', 'Default')
+        item, url = create_item_from_filter(default_filter, 'scenes', get_localized(30007))
         xbmcplugin.addDirectoryItem(_HANDLE, url, item, True)
     else:
-        item = xbmcgui.ListItem(label='Default')
+        item = xbmcgui.ListItem(label=get_localized(30007))
         url = get_url(browse='scenes', sort_field='date')
         xbmcplugin.addDirectoryItem(_HANDLE, url, item, True)
 
@@ -67,7 +70,7 @@ def browse(params):
         browse_studios(params)
 
 def browse_scenes(params):
-    title = params['title'] if 'title' in params else 'Scenes'
+    title = params['title'] if 'title' in params else get_localized(30006)
 
     criterion = json.loads(params['criterion']) if 'criterion' in params else {}
     sort_field = params['sort_field'] if 'sort_field' in params else 'title'
@@ -99,7 +102,7 @@ def browse_scenes(params):
         item.addStreamInfo('audio', {'codec': scene['file']['audio_codec']})
 
         menu = []
-        menu.append(('Increment O-counter', 'RunPlugin({})'.format(get_url(incrementO='', scene=scene['id']))))
+        menu.append((_ADDON.getLocalizedString(30008), 'RunPlugin({})'.format(get_url(incrementO='', scene=scene['id']))))
         item.addContextMenuItems(menu)
 
         screenshot = add_api_key(scene['paths']['screenshot'])
@@ -112,7 +115,7 @@ def browse_scenes(params):
     xbmcplugin.endOfDirectory(_HANDLE)
 
 def browse_performers(params):
-    xbmcplugin.setPluginCategory(_HANDLE, 'Performers')
+    xbmcplugin.setPluginCategory(_HANDLE, browse_types['performers'])
     xbmcplugin.setContent(_HANDLE, 'videos')
 
     (count, performers) = client.findPerformers()
@@ -131,7 +134,7 @@ def browse_performers(params):
     xbmcplugin.endOfDirectory(_HANDLE)
 
 def browse_tags(params):
-    xbmcplugin.setPluginCategory(_HANDLE, 'Tags')
+    xbmcplugin.setPluginCategory(_HANDLE, browse_types['tags'])
     xbmcplugin.setContent(_HANDLE, 'videos')
 
     (count, tags) = client.findTags()
@@ -149,7 +152,7 @@ def browse_tags(params):
     xbmcplugin.endOfDirectory(_HANDLE)
 
 def browse_studios(params):
-    xbmcplugin.setPluginCategory(_HANDLE, 'Studios')
+    xbmcplugin.setPluginCategory(_HANDLE, browse_types['studios'])
     xbmcplugin.setContent(_HANDLE, 'videos')
 
     (count, studios) = client.findStudios()
@@ -184,7 +187,7 @@ def play(params):
 def incrementO(params):
     if 'scene' in params:
         oCount = client.sceneIncrementO(params['scene'])
-        xbmc.executebuiltin('Notification(Stash, O-counter updated to {})'.format(oCount))
+        xbmc.executebuiltin('Notification(Stash, {} {})'.format(get_localized(30009), oCount))
 
 
 def router(paramstring):

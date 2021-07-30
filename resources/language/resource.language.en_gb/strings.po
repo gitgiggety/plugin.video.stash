@@ -20,3 +20,35 @@ msgstr ""
 msgctxt "#30001"
 msgid "API Key"
 msgstr ""
+
+msgctxt "#30002"
+msgid "All"
+msgstr ""
+
+msgctxt "#30003"
+msgid "Performers"
+msgstr ""
+
+msgctxt "#30004"
+msgid "Tags"
+msgstr ""
+
+msgctxt "#30005"
+msgid "Studios"
+msgstr ""
+
+msgctxt "#30006"
+msgid "Scenes"
+msgstr ""
+
+msgctxt "#30007"
+msgid "Default"
+msgstr ""
+
+msgctxt "#30008"
+msgid "Increment O-counter"
+msgstr ""
+
+msgctxt "#30009"
+msgid "Incremented O-counter to"
+msgstr ""
