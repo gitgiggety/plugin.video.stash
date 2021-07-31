@@ -52,3 +52,11 @@ msgstr ""
 msgctxt "#30009"
 msgid "Incremented O-counter to"
 msgstr ""
+
+msgctxt "#30010"
+msgid "Markers"
+msgstr ""
+
+msgctxt "#30011"
+msgid "Markers of"
+msgstr ""

@@ -21,6 +21,7 @@ browse_types = {
         'performers': get_localized(30003),
         'tags': get_localized(30004),
         'studios': get_localized(30005),
+        'scene_markers': get_localized(30010)
         }
 
 def run():
@@ -68,6 +69,8 @@ def browse(params):
         browse_tags(params)
     elif params['browse'] == 'studios':
         browse_studios(params)
+    elif params['browse'] == 'scene_markers':
+        browse_scene_markers(params)
 
 def browse_scenes(params):
     title = params['title'] if 'title' in params else get_localized(30006)
@@ -81,38 +84,50 @@ def browse_scenes(params):
 
     (count, scenes) = client.findScenes(criterion, sort_field, sort_dir)
     for scene in scenes:
-        item = xbmcgui.ListItem(label=scene['title'])
-        item.setInfo('video', {'title': scene['title'],
-            'mediatype': 'video',
-            'plot': scene['details'],
-            'cast': list(map(lambda p: p['name'], scene['performers'])),
-            'duration': int(scene['file']['duration']),
-            'studio': scene['studio']['name'],
-            'userrating': scene['rating'] * 2 if 'rating' in scene and scene['rating'] != None else 0, # * 2 because rating is 1 to 5 and Kodi uses 1 to 10
-            'premiered': scene['date'],
-            'tag': list(map(lambda t: t['name'], scene['tags'])),
-            'dateadded': scene['created_at']
-        })
-
-        item.addStreamInfo('video', {'codec': scene['file']['video_codec'],
-            'width': scene['file']['width'],
-            'height': scene['file']['height'],
-            'duration': int(scene['file']['duration'])})
-
-        item.addStreamInfo('audio', {'codec': scene['file']['audio_codec']})
+        (item, url) = create_item_from_scene(scene)
 
         menu = []
+        if len(scene['scene_markers']) > 0:
+            menu.append((get_localized(30010), 'ActivateWindow(videos, {})'.format(get_url(browse='scene_markers', scene=scene['id']))))
         menu.append((_ADDON.getLocalizedString(30008), 'RunPlugin({})'.format(get_url(incrementO='', scene=scene['id']))))
         item.addContextMenuItems(menu)
 
-        screenshot = add_api_key(scene['paths']['screenshot'])
-        item.setArt({'thumb': screenshot, 'fanart': screenshot})
-        item.setProperty('IsPlayable', 'true')
-        url = get_url(play=scene['id'])
         xbmcplugin.addDirectoryItem(_HANDLE, url, item, False)
 
     xbmcplugin.addSortMethod(_HANDLE, xbmcplugin.SORT_METHOD_NONE)
     xbmcplugin.endOfDirectory(_HANDLE)
+
+def browse_scene_markers(params):
+    title = get_localized(30010)
+
+    if 'scene' in params:
+        scene = client.findScene(params['scene'])
+
+        title = '{} {}'.format(get_localized(30011), scene['title'])
+        markers = scene['scene_markers']
+    else:
+        criterion = json.loads(params['criterion']) if 'criterion' in params else {}
+        sort_field = params['sort_field'] if 'sort_field' in params else 'title'
+        sort_dir = params['sort_dir'] if 'sort_dir' in params else '0'
+
+        (count, markers) = client.findSceneMarkers(criterion, sort_field, sort_dir)
+
+    xbmcplugin.setPluginCategory(_HANDLE, title)
+    xbmcplugin.setContent(_HANDLE, 'videos')
+
+    for marker in markers:
+        title = '{} - {}'.format(marker['title'], marker['primary_tag']['name'])
+        (item, url) = create_item_from_scene(marker['scene'], title)
+
+        duration = marker['scene']['file']['duration']
+
+        item.setProperty('StartPercent', str(round(marker['seconds'] / duration * 100, 2)))
+
+        xbmcplugin.addDirectoryItem(_HANDLE, url, item, False)
+
+    xbmcplugin.addSortMethod(_HANDLE, xbmcplugin.SORT_METHOD_NONE)
+    xbmcplugin.endOfDirectory(_HANDLE)
+
 
 def browse_performers(params):
     xbmcplugin.setPluginCategory(_HANDLE, browse_types['performers'])
@@ -177,6 +192,37 @@ def create_item_from_filter(filter, type, override_title = None):
     criterion_json = json.dumps(criterion_parser.parse(filter_data['c']))
 
     url = get_url(browse='scenes', title=title, criterion=criterion_json, sort_field=filter_data['sortby'], sort_dir=filter_data['disp'])
+    return (item, url)
+
+def create_item_from_scene(scene, title = None):
+    title = title if title is not None else scene['title']
+    duration = scene['file']['duration']
+    item = xbmcgui.ListItem(label=title)
+    item.setInfo('video', {'title': title,
+        'mediatype': 'video',
+        'plot': scene['details'],
+        'cast': list(map(lambda p: p['name'], scene['performers'])),
+        'duration': int(duration),
+        'studio': scene['studio']['name'],
+        'userrating': scene['rating'] * 2 if 'rating' in scene and scene['rating'] != None else 0, # * 2 because rating is 1 to 5 and Kodi uses 1 to 10
+        'premiered': scene['date'],
+        'tag': list(map(lambda t: t['name'], scene['tags'])),
+        'dateadded': scene['created_at']
+    })
+
+    item.addStreamInfo('video', {'codec': scene['file']['video_codec'],
+        'width': scene['file']['width'],
+        'height': scene['file']['height'],
+        'duration': int(scene['file']['duration'])})
+
+    item.addStreamInfo('audio', {'codec': scene['file']['audio_codec']})
+
+    screenshot = add_api_key(scene['paths']['screenshot'])
+    item.setArt({'thumb': screenshot, 'fanart': screenshot})
+    item.setProperty('IsPlayable', 'true')
+
+    url = get_url(play=scene['id'])
+
     return (item, url)
 
 def play(params):

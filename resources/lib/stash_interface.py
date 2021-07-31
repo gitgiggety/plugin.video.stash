@@ -65,6 +65,9 @@ query findScenes($scene_filter: SceneFilterType, $filter: FindFilterType!) {
       tags {
         name
       }
+      scene_markers {
+        id
+      }
     }
   }
 }
@@ -87,8 +90,71 @@ query findScenes($scene_filter: SceneFilterType, $filter: FindFilterType!) {
         query = """
 query findScene($id: ID) {
   findScene(id: $id) {
+    id
+    title
+    details
+    rating
+    date
+    created_at
     paths {
       stream
+      screenshot
+    }
+    file {
+      duration
+      video_codec
+      audio_codec
+      width
+      height
+    }
+    studio {
+      name
+    }
+    performers {
+      name
+    }
+    tags {
+      name
+    }
+    scene_markers {
+      id
+      title
+      seconds
+      scene {
+        id
+        title
+        details
+        rating
+        date
+        created_at
+        paths {
+          screenshot
+        }
+        file {
+          duration
+          video_codec
+          audio_codec
+          width
+          height
+        }
+        studio {
+          name
+        }
+        performers {
+          name
+        }
+        tags {
+          name
+        }
+      }
+      primary_tag {
+        id
+        name
+      }
+      tags {
+        id
+        name
+      }
     }
   }
 }
@@ -189,6 +255,68 @@ query findStudios($studio_filter: StudioFilterType, $filter: FindFilterType!) {
         result = self.__callGraphQL(query, variables)
 
         return (result["findStudios"]["count"], result["findStudios"]["studios"])
+
+    def findSceneMarkers(self, markers_filter = None, sort_field = 'title', sort_dir = 0):
+        query = """
+query findSceneMarkers($markers_filter: SceneMarkerFilterType, $filter: FindFilterType!) {
+  findSceneMarkers(scene_marker_filter: $markers_filter, filter: $filter) {
+    count
+    scene_markers {
+      id
+      title
+      seconds
+      scene {
+        id
+        title
+        details
+        rating
+        date
+        created_at
+        paths {
+          screenshot
+        }
+        file {
+          duration
+          video_codec
+          audio_codec
+          width
+          height
+        }
+        studio {
+          name
+        }
+        performers {
+          name
+        }
+        tags {
+          name
+        }
+      }
+      primary_tag {
+        id
+        name
+      }
+      tags {
+        id
+        name
+      }
+    }
+  }
+}
+"""
+
+        variables = {'filter': {
+            'per_page': -1,
+            'sort': sort_field,
+            'direction': 'DESC' if sort_dir == 1 else 'ASC'
+        }}
+
+        if markers_filter != None:
+            variables['markers_filter'] = markers_filter
+
+        result = self.__callGraphQL(query, variables)
+
+        return (result["findSceneMarkers"]["count"], result["findSceneMarkers"]["scene_markers"])
 
     def findSavedFilters(self, mode):
         query = """
