@@ -90,7 +90,7 @@ def browse_scenes(params):
             'studio': scene['studio']['name'],
             'userrating': scene['rating'] * 2 if 'rating' in scene and scene['rating'] != None else 0, # * 2 because rating is 1 to 5 and Kodi uses 1 to 10
             'premiered': scene['date'],
-            'tags': list(map(lambda t: t['name'], scene['tags'])),
+            'tag': list(map(lambda t: t['name'], scene['tags'])),
             'dateadded': scene['created_at']
         })
 
