@@ -1,28 +1,34 @@
 import requests
+import urllib.parse
+
 
 class StashInterface:
-    url = ""
-    headers = {
-            "Accept-Encoding": "gzip, deflate, br",
-            "Content-Type": "application/json",
-            "Accept": "application/json",
-            "Connection": "keep-alive",
-            }
-
     def __init__(self, url, api_key):
         if not url.endswith('/graphql'):
             url = "{0}/graphql".format(url.rstrip("/"))
 
-        self.headers['ApiKey'] = api_key
-        self.url = url
+        self._headers = {
+            "Accept-Encoding": "gzip, deflate, br",
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+            "Connection": "keep-alive",
+            "ApiKey": api_key
+        }
+        self._url = url
+        self._api_key = api_key
 
-    def __callGraphQL(self, query, variables = None):
-        json = {}
-        json['query'] = query
-        if variables != None:
+    def add_api_key(self, url: str):
+        if self._api_key:
+            url = "{}{}apikey={}".format(url, '&' if '?' in url else '?', urllib.parse.quote(self._api_key))
+
+        return url
+
+    def __call_graphql(self, query, variables=None):
+        json = {'query': query}
+        if variables is not None:
             json['variables'] = variables
 
-        response = requests.post(self.url, json=json, headers=self.headers)
+        response = requests.post(self._url, json=json, headers=self._headers)
 
         if response.status_code == 200:
             result = response.json()
@@ -32,9 +38,11 @@ class StashInterface:
             if result.get("data", None):
                 return result.get("data")
         else:
-            raise Exception("GraphQL query failed:{} - {}. Query: {}. Variables: {}".format(response.status_code, response.content, query, variables))
+            raise Exception(
+                "GraphQL query failed:{} - {}. Query: {}. Variables: {}".format(response.status_code, response.content,
+                                                                                query, variables))
 
-    def findScenes(self, scene_filter = None, sort_field = 'title', sort_dir = 0):
+    def find_scenes(self, scene_filter=None, sort_field='title', sort_dir=0):
         query = """
 query findScenes($scene_filter: SceneFilterType, $filter: FindFilterType!) {
   findScenes(scene_filter: $scene_filter, filter: $filter) {
@@ -79,14 +87,14 @@ query findScenes($scene_filter: SceneFilterType, $filter: FindFilterType!) {
             'direction': 'DESC' if sort_dir == 1 else 'ASC'
         }}
 
-        if scene_filter != None:
+        if scene_filter is not None:
             variables['scene_filter'] = scene_filter
 
-        result = self.__callGraphQL(query, variables)
+        result = self.__call_graphql(query, variables)
 
-        return (result["findScenes"]["count"], result["findScenes"]["scenes"])
+        return result["findScenes"]["count"], result["findScenes"]["scenes"]
 
-    def findScene(self, id):
+    def find_scene(self, id):
         query = """
 query findScene($id: ID) {
   findScene(id: $id) {
@@ -162,9 +170,9 @@ query findScene($id: ID) {
 
         variables = {'id': id}
 
-        return self.__callGraphQL(query, variables)['findScene']
+        return self.__call_graphql(query, variables)['findScene']
 
-    def findPerformers(self):
+    def find_performers(self):
         query = """
 query findPerformers($performer_filter: PerformerFilterType, $filter: FindFilterType!) {
   findPerformers(performer_filter: $performer_filter, filter: $filter) {
@@ -180,9 +188,9 @@ query findPerformers($performer_filter: PerformerFilterType, $filter: FindFilter
 """
 
         variables = {'filter': {
-                'per_page': -1,
-                'sort': 'name'
-            },
+            'per_page': -1,
+            'sort': 'name'
+        },
             'performer_filter': {
                 'scene_count': {
                     'modifier': 'GREATER_THAN',
@@ -191,11 +199,11 @@ query findPerformers($performer_filter: PerformerFilterType, $filter: FindFilter
             }
         }
 
-        result = self.__callGraphQL(query, variables)
+        result = self.__call_graphql(query, variables)
 
-        return (result["findPerformers"]["count"], result["findPerformers"]["performers"])
+        return result["findPerformers"]["count"], result["findPerformers"]["performers"]
 
-    def findTags(self):
+    def find_tags(self):
         query = """
 query findTags($tag_filter: TagFilterType, $filter: FindFilterType!) {
   findTags(tag_filter: $tag_filter, filter: $filter) {
@@ -210,9 +218,9 @@ query findTags($tag_filter: TagFilterType, $filter: FindFilterType!) {
 """
 
         variables = {'filter': {
-                'per_page': -1,
-                'sort': 'name'
-            },
+            'per_page': -1,
+            'sort': 'name'
+        },
             'tag_filter': {
                 'scene_count': {
                     'modifier': 'GREATER_THAN',
@@ -221,11 +229,11 @@ query findTags($tag_filter: TagFilterType, $filter: FindFilterType!) {
             }
         }
 
-        result = self.__callGraphQL(query, variables)
+        result = self.__call_graphql(query, variables)
 
-        return (result["findTags"]["count"], result["findTags"]["tags"])
+        return result["findTags"]["count"], result["findTags"]["tags"]
 
-    def findStudios(self):
+    def find_studios(self):
         query = """
 query findStudios($studio_filter: StudioFilterType, $filter: FindFilterType!) {
   findStudios(studio_filter: $studio_filter, filter: $filter) {
@@ -241,9 +249,9 @@ query findStudios($studio_filter: StudioFilterType, $filter: FindFilterType!) {
 """
 
         variables = {'filter': {
-                'per_page': -1,
-                'sort': 'name'
-            },
+            'per_page': -1,
+            'sort': 'name'
+        },
             'studio_filter': {
                 'scene_count': {
                     'modifier': 'GREATER_THAN',
@@ -252,11 +260,11 @@ query findStudios($studio_filter: StudioFilterType, $filter: FindFilterType!) {
             }
         }
 
-        result = self.__callGraphQL(query, variables)
+        result = self.__call_graphql(query, variables)
 
-        return (result["findStudios"]["count"], result["findStudios"]["studios"])
+        return result["findStudios"]["count"], result["findStudios"]["studios"]
 
-    def findSceneMarkers(self, markers_filter = None, sort_field = 'title', sort_dir = 0):
+    def find_scene_markers(self, markers_filter=None, sort_field='title', sort_dir=0):
         query = """
 query findSceneMarkers($markers_filter: SceneMarkerFilterType, $filter: FindFilterType!) {
   findSceneMarkers(scene_marker_filter: $markers_filter, filter: $filter) {
@@ -311,14 +319,14 @@ query findSceneMarkers($markers_filter: SceneMarkerFilterType, $filter: FindFilt
             'direction': 'DESC' if sort_dir == 1 else 'ASC'
         }}
 
-        if markers_filter != None:
+        if markers_filter is not None:
             variables['markers_filter'] = markers_filter
 
-        result = self.__callGraphQL(query, variables)
+        result = self.__call_graphql(query, variables)
 
-        return (result["findSceneMarkers"]["count"], result["findSceneMarkers"]["scene_markers"])
+        return result["findSceneMarkers"]["count"], result["findSceneMarkers"]["scene_markers"]
 
-    def findSavedFilters(self, mode):
+    def find_saved_filters(self, mode):
         query = """
 query findSavedFilters($mode: FilterMode!) {
     findSavedFilters(mode: $mode) {
@@ -330,11 +338,11 @@ query findSavedFilters($mode: FilterMode!) {
 
         variables = {'mode': mode}
 
-        result = self.__callGraphQL(query, variables)
+        result = self.__call_graphql(query, variables)
 
         return result['findSavedFilters']
 
-    def findDefaultFilter(self, mode):
+    def find_default_filter(self, mode):
         query = """
 query findDefaultFilter($mode: FilterMode!) {
     findDefaultFilter(mode: $mode) {
@@ -346,11 +354,11 @@ query findDefaultFilter($mode: FilterMode!) {
 
         variables = {'mode': mode}
 
-        result = self.__callGraphQL(query, variables)
+        result = self.__call_graphql(query, variables)
 
         return result['findDefaultFilter']
 
-    def sceneIncrementO(self, id):
+    def scene_increment_o(self, id):
         query = """
 mutation sceneIncrementO($id: ID!) {
   sceneIncrementO(id: $id)
@@ -359,6 +367,6 @@ mutation sceneIncrementO($id: ID!) {
 
         variables = {'id': id}
 
-        result = self.__callGraphQL(query, variables)
+        result = self.__call_graphql(query, variables)
 
-        return (result["sceneIncrementO"])
+        return result["sceneIncrementO"]

@@ -1,28 +1,23 @@
 import sys
-import json
-from urllib.parse import urlencode, parse_qsl
-import urllib.parse
+from urllib.parse import parse_qsl
+from typing import Optional
 import xbmc
 import xbmcaddon
 import xbmcgui
 import xbmcplugin
-import resources.lib.criterion_parser as criterion_parser
+from resources.lib import utils
+from resources.lib.listing import create_listing, Listing, SceneListing, SceneMarkerListing
+from resources.lib.navigation import NavigationItem
 from resources.lib.stash_interface import StashInterface
 
-_URL = sys.argv[0]
+utils.BASE_URL = sys.argv[0]
 _HANDLE = int(sys.argv[1])
+NavigationItem.handle = _HANDLE
+Listing.handle = _HANDLE
 _ADDON = xbmcaddon.Addon()
+api_key: str = ''
+client: Optional[StashInterface] = None
 
-def get_localized(id):
-    return _ADDON.getLocalizedString(id)
-
-browse_types = {
-        'scenes': get_localized(30002),
-        'performers': get_localized(30003),
-        'tags': get_localized(30004),
-        'studios': get_localized(30005),
-        'scene_markers': get_localized(30010)
-        }
 
 def run():
     global api_key
@@ -31,227 +26,64 @@ def run():
     client = StashInterface(_ADDON.getSetting('base_url'), api_key)
     router(sys.argv[2][1:])
 
-def get_url(**kwargs):
-    return '{}?{}'.format(_URL, urlencode(kwargs))
 
 def list_root():
     xbmcplugin.setPluginCategory(_HANDLE, 'Stash')
     xbmcplugin.setContent(_HANDLE, 'videos')
 
-    default_filter = client.findDefaultFilter('SCENES')
-    if default_filter != None:
-        item, url = create_item_from_filter(default_filter, 'scenes', get_localized(30007))
-        xbmcplugin.addDirectoryItem(_HANDLE, url, item, True)
-    else:
-        item = xbmcgui.ListItem(label=get_localized(30007))
-        url = get_url(browse='scenes', sort_field='date')
+    listing = SceneListing(client)
+    for (item, url) in listing.get_filters():
         xbmcplugin.addDirectoryItem(_HANDLE, url, item, True)
 
-    saved_filters = client.findSavedFilters('SCENES')
+    (item, url) = listing.get_root_item()
+    xbmcplugin.addDirectoryItem(_HANDLE, url, item, True)
 
-    for saved_filter in saved_filters:
-        item, url = create_item_from_filter(saved_filter, 'scenes')
+    for navItem in listing.get_navigation():
+        (item, url) = navItem.get_root_item()
         xbmcplugin.addDirectoryItem(_HANDLE, url, item, True)
 
-    for type in browse_types:
-        item = xbmcgui.ListItem(label=browse_types[type])
-        url = get_url(browse=type)
-        xbmcplugin.addDirectoryItem(_HANDLE, url, item, True)
-    xbmcplugin.addSortMethod(_HANDLE, xbmcplugin.SORT_METHOD_NONE)
-    xbmcplugin.endOfDirectory(_HANDLE)
-
-def browse(params):
-    if params['browse'] == 'scenes':
-        browse_scenes(params)
-    elif params['browse'] == 'performers':
-        browse_performers(params)
-    elif params['browse'] == 'tags':
-        browse_tags(params)
-    elif params['browse'] == 'studios':
-        browse_studios(params)
-    elif params['browse'] == 'scene_markers':
-        browse_scene_markers(params)
-
-def browse_scenes(params):
-    title = params['title'] if 'title' in params else get_localized(30006)
-
-    criterion = json.loads(params['criterion']) if 'criterion' in params else {}
-    sort_field = params['sort_field'] if 'sort_field' in params else 'title'
-    sort_dir = params['sort_dir'] if 'sort_dir' in params else '0'
-
-    xbmcplugin.setPluginCategory(_HANDLE, title)
-    xbmcplugin.setContent(_HANDLE, 'videos')
-
-    (count, scenes) = client.findScenes(criterion, sort_field, sort_dir)
-    for scene in scenes:
-        (item, url) = create_item_from_scene(scene)
-
-        menu = []
-        if len(scene['scene_markers']) > 0:
-            menu.append((get_localized(30010), 'ActivateWindow(videos, {})'.format(get_url(browse='scene_markers', scene=scene['id']))))
-        menu.append((_ADDON.getLocalizedString(30008), 'RunPlugin({})'.format(get_url(incrementO='', scene=scene['id']))))
-        item.addContextMenuItems(menu)
-
-        xbmcplugin.addDirectoryItem(_HANDLE, url, item, False)
-
-    xbmcplugin.addSortMethod(_HANDLE, xbmcplugin.SORT_METHOD_NONE)
-    xbmcplugin.endOfDirectory(_HANDLE)
-
-def browse_scene_markers(params):
-    title = get_localized(30010)
-
-    if 'scene' in params:
-        scene = client.findScene(params['scene'])
-
-        title = '{} {}'.format(get_localized(30011), scene['title'])
-        markers = scene['scene_markers']
-    else:
-        criterion = json.loads(params['criterion']) if 'criterion' in params else {}
-        sort_field = params['sort_field'] if 'sort_field' in params else 'title'
-        sort_dir = params['sort_dir'] if 'sort_dir' in params else '0'
-
-        (count, markers) = client.findSceneMarkers(criterion, sort_field, sort_dir)
-
-    xbmcplugin.setPluginCategory(_HANDLE, title)
-    xbmcplugin.setContent(_HANDLE, 'videos')
-
-    for marker in markers:
-        title = '{} - {}'.format(marker['title'], marker['primary_tag']['name'])
-        (item, url) = create_item_from_scene(marker['scene'], title)
-
-        duration = marker['scene']['file']['duration']
-
-        item.setProperty('StartPercent', str(round(marker['seconds'] / duration * 100, 2)))
-
-        xbmcplugin.addDirectoryItem(_HANDLE, url, item, False)
+    listing = SceneMarkerListing(client)
+    (item, url) = listing.get_root_item()
+    xbmcplugin.addDirectoryItem(_HANDLE, url, item, True)
 
     xbmcplugin.addSortMethod(_HANDLE, xbmcplugin.SORT_METHOD_NONE)
     xbmcplugin.endOfDirectory(_HANDLE)
 
 
-def browse_performers(params):
-    xbmcplugin.setPluginCategory(_HANDLE, browse_types['performers'])
-    xbmcplugin.setContent(_HANDLE, 'videos')
+def browse(params: dict):
+    listing = create_listing(params['browse'], client)
+    listing.list_items(params)
 
-    (count, performers) = client.findPerformers()
-    for performer in performers:
-        item = xbmcgui.ListItem(label=performer['name'])
-        item.setInfo('video', {'title': performer['name'],
-            'mediatype': 'video',
-            'plot': performer['details']})
 
-        item.setArt({'thumb': add_api_key(performer['image_path'])})
-        criterion = {'performers': {'modifier': 'INCLUDES_ALL', 'value': [performer['id']]}}
-        url = get_url(browse='scenes', criterion=json.dumps(criterion), title=performer['name'])
-        xbmcplugin.addDirectoryItem(_HANDLE, url, item, True)
+def browse_for(params: dict):
+    listing = create_listing(params['browse_for'], client)
+    navigation = listing.get_navigation_item(params)
+    navigation.list_items()
 
-    xbmcplugin.addSortMethod(_HANDLE, xbmcplugin.SORT_METHOD_LABEL_IGNORE_THE)
-    xbmcplugin.endOfDirectory(_HANDLE)
 
-def browse_tags(params):
-    xbmcplugin.setPluginCategory(_HANDLE, browse_types['tags'])
-    xbmcplugin.setContent(_HANDLE, 'videos')
-
-    (count, tags) = client.findTags()
-    for tag in tags:
-        item = xbmcgui.ListItem(label=tag['name'])
-        item.setInfo('video', {'title': tag['name'],
-            'mediatype': 'video'})
-
-        item.setArt({'thumb': add_api_key(tag['image_path'])})
-        criterion = {'tags': {'modifier': 'INCLUDES_ALL', 'value': [tag['id']]}}
-        url = get_url(browse='scenes', criterion=json.dumps(criterion), title=tag['name'])
-        xbmcplugin.addDirectoryItem(_HANDLE, url, item, True)
-
-    xbmcplugin.addSortMethod(_HANDLE, xbmcplugin.SORT_METHOD_LABEL_IGNORE_THE)
-    xbmcplugin.endOfDirectory(_HANDLE)
-
-def browse_studios(params):
-    xbmcplugin.setPluginCategory(_HANDLE, browse_types['studios'])
-    xbmcplugin.setContent(_HANDLE, 'videos')
-
-    (count, studios) = client.findStudios()
-    for studio in studios:
-        item = xbmcgui.ListItem(label=studio['name'])
-        item.setInfo('video', {'title': studio['name'],
-            'mediatype': 'video',
-            'plot': studio['details']})
-
-        item.setArt({'thumb': add_api_key(studio['image_path'])})
-        criterion = {'studios': {'modifier': 'INCLUDES_ALL', 'value': [studio['id']], 'depth': 0}}
-        url = get_url(browse='scenes', criterion=json.dumps(criterion), title=studio['name'])
-        xbmcplugin.addDirectoryItem(_HANDLE, url, item, True)
-
-    xbmcplugin.addSortMethod(_HANDLE, xbmcplugin.SORT_METHOD_LABEL_IGNORE_THE)
-    xbmcplugin.endOfDirectory(_HANDLE)
-
-def create_item_from_filter(filter, type, override_title = None):
-    title = override_title if override_title != None else filter['name']
-    item = xbmcgui.ListItem(label=title)
-    filter_data = json.loads(filter['filter'])
-    criterion_json = json.dumps(criterion_parser.parse(filter_data['c']))
-
-    url = get_url(browse='scenes', title=title, criterion=criterion_json, sort_field=filter_data['sortby'], sort_dir=filter_data['disp'])
-    return (item, url)
-
-def create_item_from_scene(scene, title = None):
-    title = title if title is not None else scene['title']
-    duration = scene['file']['duration']
-    item = xbmcgui.ListItem(label=title)
-    item.setInfo('video', {'title': title,
-        'mediatype': 'video',
-        'plot': scene['details'],
-        'cast': list(map(lambda p: p['name'], scene['performers'])),
-        'duration': int(duration),
-        'studio': scene['studio']['name'],
-        'userrating': scene['rating'] * 2 if 'rating' in scene and scene['rating'] != None else 0, # * 2 because rating is 1 to 5 and Kodi uses 1 to 10
-        'premiered': scene['date'],
-        'tag': list(map(lambda t: t['name'], scene['tags'])),
-        'dateadded': scene['created_at']
-    })
-
-    item.addStreamInfo('video', {'codec': scene['file']['video_codec'],
-        'width': scene['file']['width'],
-        'height': scene['file']['height'],
-        'duration': int(scene['file']['duration'])})
-
-    item.addStreamInfo('audio', {'codec': scene['file']['audio_codec']})
-
-    screenshot = add_api_key(scene['paths']['screenshot'])
-    item.setArt({'thumb': screenshot, 'fanart': screenshot})
-    item.setProperty('IsPlayable', 'true')
-
-    url = get_url(play=scene['id'])
-
-    return (item, url)
-
-def play(params):
-    scene = client.findScene(params['play'])
+def play(params: dict):
+    scene = client.find_scene(params['play'])
     item = xbmcgui.ListItem(path=scene['paths']['stream'])
     xbmcplugin.setResolvedUrl(_HANDLE, True, listitem=item)
 
-def incrementO(params):
+
+def increment_o(params: dict):
     if 'scene' in params:
-        oCount = client.sceneIncrementO(params['scene'])
-        xbmc.executebuiltin('Notification(Stash, {} {})'.format(get_localized(30009), oCount))
+        o_count = client.scene_increment_o(params['scene'])
+        xbmc.executebuiltin('Notification(Stash, {} {})'.format(utils.local.get_localized(30009), o_count))
 
 
-def router(paramstring):
-    params = dict(parse_qsl(paramstring, keep_blank_values=True))
+def router(param_string: str):
+    params = dict(parse_qsl(param_string, keep_blank_values=True))
 
     if params:
-        if 'browse' in params:
+        if 'browse_for' in params:
+            browse_for(params)
+        elif 'browse' in params:
             browse(params)
         elif 'play' in params:
             play(params)
-        elif 'incrementO' in params:
-            incrementO(params)
+        elif 'increment_o' in params:
+            increment_o(params)
     else:
         list_root()
-
-def add_api_key(url):
-    if api_key:
-        url = "{}{}apikey={}".format(url, '&' if '?' in url else '?', urllib.parse.quote(api_key))
-
-    return url
-

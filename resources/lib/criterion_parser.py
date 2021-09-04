@@ -1,5 +1,6 @@
 import json
 
+
 def parse(criterions):
     filter = {}
 
@@ -9,6 +10,7 @@ def parse(criterions):
         filter[criterion['type']] = parse_criterion(criterion)
 
     return filter
+
 
 def parse_criterion(criterion):
     filter = {}
