@@ -10,15 +10,14 @@
     <extension point="xbmc.addon.metadata">
         <summary lang="en_GB">View videos tracked in Stash</summary>
         <description lang="en_GB">Plugin to browse and view videos which are tracked in Stash (stashapp.io)</description>
-        <language></language>
+        <disclaimer lang="en_GB"></disclaimer>
+        <language>en</language>
         <platform>all</platform>
         <license>GNU GENERAL PUBLIC LICENSE Version 2, June 1991</license>
-        <forum></forum>
-        <website></website>
+        <website>https://stashapp.cc</website>
         <email>gitgiggety@outlook.com</email>
-        <source></source>
+        <source>https://github.com/gitgiggety/plugin.video.stash</source>
         <news></news>
-        <disclaimer></disclaimer>
         <assets>
             <icon>resources/stash_logo.png</icon>
             <fanart></fanart>

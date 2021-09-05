@@ -15,7 +15,7 @@ jobs:
       - name: Create addon zip
         run: |
           mkdir -p /tmp/plugin.video.stash
-          rsync -a addon.xml addon.py resources /tmp/plugin.video.stash
+          rsync -a --exclude 'resources/stash_logo.svg' addon.xml addon.py resources /tmp/plugin.video.stash
           cd /tmp/
           zip -r plugin.video.stash.zip plugin.video.stash/
       - name: Upload
