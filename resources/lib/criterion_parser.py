@@ -17,12 +17,12 @@ def parse_criterion(criterion):
 
     filter['modifier'] = criterion['modifier']
 
-    if isinstance(criterion['value'], list):
+    if isinstance(criterion['value'], dict) and 'depth' in criterion['value']:
+        filter['value'] = list(map(lambda v: v['id'], criterion['value']['items']))
+        filter['depth'] = criterion['value']['depth']
+    elif isinstance(criterion['value'], list):
         filter['value'] = list(map(lambda v: v['id'], criterion['value']))
     else:
         filter['value'] = criterion['value']
-
-    if 'depth' in criterion:
-        filter['depth'] = criterion['depth']
 
     return filter

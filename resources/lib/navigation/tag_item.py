@@ -11,7 +11,7 @@ class TagItem(NavigationItem):
         (count, tags) = self._client.find_tags()
         items = []
         for tag in tags:
-            criterion = {'tags': {'modifier': 'INCLUDES_ALL', 'value': [tag['id']]}}
+            criterion = {'tags': {'modifier': 'INCLUDES_ALL', 'value': [tag['id']], 'depth': 0}}
             item = self._create_item(tag['name'], image_path=tag['image_path'])
             url = self._create_url(tag['name'], criterion)
             items.append((item, url))
