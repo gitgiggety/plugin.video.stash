@@ -24,7 +24,7 @@ class Listing(ABC):
 
         criterion = json.loads(params['criterion']) if 'criterion' in params else {}
         sort_field = params['sort_field'] if 'sort_field' in params else 'title'
-        sort_dir = params['sort_dir'] if 'sort_dir' in params else '0'
+        sort_dir = params['sort_dir'] if 'sort_dir' in params else 'asc'
 
         xbmcplugin.setPluginCategory(self.handle, title)
         xbmcplugin.setContent(self.handle, 'videos')
@@ -32,7 +32,7 @@ class Listing(ABC):
         for (item, url) in self._create_items(criterion, sort_field, sort_dir, params):
             xbmcplugin.addDirectoryItem(self.handle, url, item, False)
 
-        xbmcplugin.addSortMethod(self.handle, xbmcplugin.SORT_METHOD_LABEL_IGNORE_THE)
+        xbmcplugin.addSortMethod(self.handle, xbmcplugin.SORT_METHOD_NONE)
         xbmcplugin.endOfDirectory(self.handle)
 
     def get_root_item(self) -> (xbmcgui.ListItem, str):
@@ -122,6 +122,6 @@ class Listing(ABC):
                             title=title,
                             criterion=criterion_json,
                             sort_field=filter_data['sortby'],
-                            sort_dir=filter_data['disp']
+                            sort_dir=filter_data['sortdir']
                             )
         return item, url

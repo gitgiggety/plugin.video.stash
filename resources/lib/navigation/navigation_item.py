@@ -29,7 +29,7 @@ class NavigationItem(ABC):
         for (item, url) in self._create_items():
             xbmcplugin.addDirectoryItem(self.handle, url, item, True)
 
-        xbmcplugin.addSortMethod(self.handle, xbmcplugin.SORT_METHOD_LABEL_IGNORE_THE)
+        xbmcplugin.addSortMethod(self.handle, xbmcplugin.SORT_METHOD_NONE)
         xbmcplugin.endOfDirectory(self.handle)
 
     @abstractmethod

@@ -33,7 +33,7 @@ class SceneListing(Listing):
 
         return item, url
 
-    def _create_items(self, criterion: dict, sort_field: str, sort_dir: int, params: dict):
+    def _create_items(self, criterion: dict, sort_field: str, sort_dir: str, params: dict):
         (count, scenes) = self._client.find_scenes(criterion, sort_field, sort_dir)
         items = []
         for scene in scenes:
