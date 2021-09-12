@@ -23,7 +23,7 @@ class Listing(ABC):
         title = params['title'] if 'title' in params else self._label
 
         criterion = json.loads(params['criterion']) if 'criterion' in params else {}
-        sort_field = params['sort_field'] if 'sort_field' in params else 'title'
+        sort_field = params['sort_field'] if 'sort_field' in params else None
         sort_dir = params['sort_dir'] if 'sort_dir' in params else 'asc'
 
         xbmcplugin.setPluginCategory(self.handle, title)
@@ -35,9 +35,9 @@ class Listing(ABC):
         xbmcplugin.addSortMethod(self.handle, xbmcplugin.SORT_METHOD_NONE)
         xbmcplugin.endOfDirectory(self.handle)
 
-    def get_root_item(self) -> (xbmcgui.ListItem, str):
-        item = xbmcgui.ListItem(label=self._label)
-        url = utils.get_url(browse=self._type)
+    def get_root_item(self, override_title: str = "") -> (xbmcgui.ListItem, str):
+        item = xbmcgui.ListItem(label=override_title if override_title != "" else self._label)
+        url = utils.get_url(list=self._type)
 
         return item, url
 
@@ -51,7 +51,7 @@ class Listing(ABC):
             items.append(self._create_item_from_filter(default_filter, local.get_localized(30007)))
         else:
             item = xbmcgui.ListItem(label=local.get_localized(30007))
-            url = utils.get_url(browse=self._type, sort_field='date')
+            url = utils.get_url(list=self._type)
             items.append((item, url))
 
         saved_filters = self._client.find_saved_filters(self._filter_type)
@@ -118,7 +118,7 @@ class Listing(ABC):
         filter_data = json.loads(filter['filter'])
         criterion_json = json.dumps(criterion_parser.parse(filter_data['c']))
 
-        url = utils.get_url(browse=self._type,
+        url = utils.get_url(list=self._type,
                             title=title,
                             criterion=criterion_json,
                             sort_field=filter_data['sortby'],

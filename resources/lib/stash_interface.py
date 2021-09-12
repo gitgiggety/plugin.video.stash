@@ -32,9 +32,9 @@ class StashInterface:
 
         if response.status_code == 200:
             result = response.json()
-            if result.get("error", None):
-                for error in result["error"]["errors"]:
-                    raise Exception("GraphQL error: {}".format(error))
+            if result.get("errors", None):
+                for error in result["errors"]:
+                    raise Exception("GraphQL error: {}".format(error['message']))
             if result.get("data", None):
                 return result.get("data")
         else:
@@ -83,7 +83,7 @@ query findScenes($scene_filter: SceneFilterType, $filter: FindFilterType!) {
 
         variables = {'filter': {
             'per_page': -1,
-            'sort': sort_field,
+            'sort': sort_field if sort_field is not None else 'title',
             'direction': 'DESC' if sort_dir.lower() == 'desc' else 'ASC'
         }}
 
@@ -315,7 +315,7 @@ query findSceneMarkers($markers_filter: SceneMarkerFilterType, $filter: FindFilt
 
         variables = {'filter': {
             'per_page': -1,
-            'sort': sort_field,
+            'sort': sort_field if sort_field is not None else 'title',
             'direction': 'DESC' if sort_dir == 1 else 'ASC'
         }}
 

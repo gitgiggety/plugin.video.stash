@@ -27,12 +27,6 @@ class SceneListing(Listing):
         if browse == 'studios':
             return StudioItem(self._client, 'scenes')
 
-    def get_root_item(self) -> (xbmcgui.ListItem, str):
-        item = xbmcgui.ListItem(label=local.get_localized(30002))
-        url = get_url(browse='scenes')
-
-        return item, url
-
     def _create_items(self, criterion: dict, sort_field: str, sort_dir: str, params: dict):
         (count, scenes) = self._client.find_scenes(criterion, sort_field, sort_dir)
         items = []
@@ -43,7 +37,7 @@ class SceneListing(Listing):
             menu = []
             if len(scene['scene_markers']) > 0:
                 menu.append((local.get_localized(30010),
-                             'ActivateWindow(videos, {})'.format(get_url(browse='scene_markers', scene=scene['id']))))
+                             'ActivateWindow(videos, {})'.format(get_url(list='scene_markers', scene=scene['id']))))
             menu.append(
                 (local.get_localized(30008), 'RunPlugin({})'.format(get_url(increment_o='', scene=scene['id']))))
             item.addContextMenuItems(menu)

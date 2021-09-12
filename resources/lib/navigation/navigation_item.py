@@ -49,6 +49,6 @@ class NavigationItem(ABC):
 
     def _create_url(self, title: str, criterion: dict, **kwargs) -> str:
         kwargs['criterion'] = json.dumps(criterion)
-        kwargs['browse'] = self._browse_for
+        kwargs['list'] = self._browse_for
         kwargs['title'] = title
         return utils.get_url(**kwargs)
