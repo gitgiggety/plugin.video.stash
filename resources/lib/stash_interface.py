@@ -172,7 +172,7 @@ query findScene($id: ID) {
 
         return self.__call_graphql(query, variables)['findScene']
 
-    def find_performers(self):
+    def find_performers(self, **kwargs):
         query = """
 query findPerformers($performer_filter: PerformerFilterType, $filter: FindFilterType!) {
   findPerformers(performer_filter: $performer_filter, filter: $filter) {
@@ -203,7 +203,7 @@ query findPerformers($performer_filter: PerformerFilterType, $filter: FindFilter
 
         return result["findPerformers"]["count"], result["findPerformers"]["performers"]
 
-    def find_tags(self):
+    def find_tags(self, **kwargs):
         query = """
 query findTags($tag_filter: TagFilterType, $filter: FindFilterType!) {
   findTags(tag_filter: $tag_filter, filter: $filter) {
@@ -217,16 +217,20 @@ query findTags($tag_filter: TagFilterType, $filter: FindFilterType!) {
 }
 """
 
+        filter = {}
+        if 'has_type' in kwargs:
+            count_type = 'marker_count' if kwargs['has_type'] == 'scene_markers' else 'scene_count'
+
+            filter[count_type] = {
+                'modifier': 'GREATER_THAN',
+                'value': 0,
+            }
+
         variables = {'filter': {
             'per_page': -1,
             'sort': 'name'
         },
-            'tag_filter': {
-                'scene_count': {
-                    'modifier': 'GREATER_THAN',
-                    'value': 0,
-                }
-            }
+            'tag_filter': filter
         }
 
         result = self.__call_graphql(query, variables)

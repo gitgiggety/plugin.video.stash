@@ -60,3 +60,7 @@ msgstr ""
 msgctxt "#30011"
 msgid "Markers of"
 msgstr ""
+
+msgctxt "#30012"
+msgid "Scene Tags"
+msgstr ""

@@ -3,7 +3,7 @@ from typing import Optional
 from .listing import Listing
 from resources.lib.stash_interface import StashInterface
 from resources.lib.utils import local
-from ..navigation import NavigationItem
+from ..navigation import NavigationItem, PerformerItem, TagItem
 
 
 class SceneMarkerListing(Listing):
@@ -11,10 +11,20 @@ class SceneMarkerListing(Listing):
         Listing.__init__(self, client, 'scene_markers', local.get_localized(30010), filter_type='SCENE_MARKERS')
 
     def get_navigation(self) -> [NavigationItem]:
-        return []
+        return [
+            PerformerItem(self._client, 'scene_markers'),
+            TagItem(self._client, 'scene_markers'),
+            TagItem(self._client, 'scene_markers', type='scene_tags', label=local.get_localized(30012)),
+        ]
 
     def get_navigation_item(self, params: dict) -> Optional[NavigationItem]:
-        return None
+        browse = params['browse']
+        if browse == 'performers':
+            return PerformerItem(self._client, 'scene_markers')
+        if browse == 'tags':
+            return TagItem(self._client, 'scene_markers')
+        if browse == 'scene_tags':
+            return TagItem(self._client, 'scene_markers', type='scene_tags', label=local.get_localized(30012))
 
     def _create_items(self, criterion: dict, sort_field: str, sort_dir: int, params: dict):
         if 'scene' in params:
