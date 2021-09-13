@@ -84,7 +84,7 @@ class Listing(ABC):
                                'plot': scene['details'],
                                'cast': list(map(lambda p: p['name'], scene['performers'])),
                                'duration': duration,
-                               'studio': scene['studio']['name'],
+                               'studio': scene['studio']['name'] if scene['studio'] is not None else None,
                                'userrating': rating,
                                'premiered': scene['date'],
                                'tag': list(map(lambda t: t['name'], scene['tags'])),
