@@ -73,8 +73,9 @@ class Listing(ABC):
     def _create_items(self, criterion: dict, sort_field: str, sort_dir: int, params: dict) -> [(xbmcgui.ListItem, str)]:
         pass
 
-    def _create_item(self, scene: dict, title: str = None):
-        title = title if title is not None else scene['title']
+    def _create_item(self, scene: dict, **kwargs):
+        title = kwargs['title'] if 'title' in kwargs else scene['title']
+        screenshot = kwargs['screenshot'] if 'screenshot' in kwargs else scene['paths']['screenshot']
         # * 2 because rating is 1 to 5 and Kodi uses 1 to 10
         rating = scene['rating'] * 2 if 'rating' in scene and scene['rating'] is not None else 0
         duration = int(scene['file']['duration'])
@@ -98,7 +99,7 @@ class Listing(ABC):
 
         item.addStreamInfo('audio', {'codec': scene['file']['audio_codec']})
 
-        screenshot = self._client.add_api_key(scene['paths']['screenshot'])
+        screenshot = self._client.add_api_key(screenshot)
         item.setArt({'thumb': screenshot, 'fanart': screenshot})
         item.setProperty('IsPlayable', 'true')
 

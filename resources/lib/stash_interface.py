@@ -128,6 +128,7 @@ query findScene($id: ID) {
       id
       title
       seconds
+      screenshot
       scene {
         id
         title
@@ -277,6 +278,7 @@ query findSceneMarkers($markers_filter: SceneMarkerFilterType, $filter: FindFilt
       id
       title
       seconds
+      screenshot
       scene {
         id
         title

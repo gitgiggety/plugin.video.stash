@@ -38,7 +38,7 @@ class SceneMarkerListing(Listing):
         items = []
         for marker in markers:
             title = '{} - {}'.format(marker['title'], marker['primary_tag']['name'])
-            item = self._create_item(marker['scene'], title)
+            item = self._create_item(marker['scene'], title=title, screenshot=marker['screenshot'])
             url = self._create_play_url(marker['scene']['id'])
 
             duration = marker['scene']['file']['duration']
