@@ -122,7 +122,7 @@ class Listing(ABC):
         url = utils.get_url(list=self._type,
                             title=title,
                             criterion=criterion_json,
-                            sort_field=filter_data['sortby'],
-                            sort_dir=filter_data['sortdir']
+                            sort_field=filter_data.get('sortby'),
+                            sort_dir=filter_data.get('sortdir')
                             )
         return item, url
