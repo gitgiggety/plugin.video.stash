@@ -20,6 +20,8 @@ def parse_criterion(criterion):
     if isinstance(criterion['value'], dict) and 'depth' in criterion['value']:
         filter['value'] = list(map(lambda v: v['id'], criterion['value']['items']))
         filter['depth'] = criterion['value']['depth']
+    elif isinstance(criterion['value'], dict) and not criterion['value'].keys() - ['value', 'value2']:
+        filter.update(criterion['value'])
     elif isinstance(criterion['value'], list):
         filter['value'] = list(map(lambda v: v['id'], criterion['value']))
     else:
