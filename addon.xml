@@ -18,12 +18,9 @@
         <email>gitgiggety@outlook.com</email>
         <source>https://github.com/gitgiggety/plugin.video.stash</source>
         <news>
-v0.0.3 (2021-09-13):
-- Add context menu item to increase O-counter
-- Add directory for default filter
-- Add translation support
-- Support browsing (and playback of) markers, in form of all, using saved filters, and by performer, tag and scene tag
-- Fix error when scene has no studio set (#1)
+v0.0.7 (2023-02-26):
+- Fix handing of "is missing" filters
+- Fix handling of filters without values like "is null"
         </news>
         <assets>
             <icon>resources/stash_logo.png</icon>
