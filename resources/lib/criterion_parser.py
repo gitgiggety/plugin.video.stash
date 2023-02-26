@@ -21,14 +21,15 @@ def parse_criterion(criterion):
 
     filter['modifier'] = criterion['modifier']
 
-    if isinstance(criterion['value'], dict) and 'depth' in criterion['value']:
-        filter['value'] = list(map(lambda v: v['id'], criterion['value']['items']))
-        filter['depth'] = criterion['value']['depth']
-    elif isinstance(criterion['value'], dict) and not criterion['value'].keys() - ['value', 'value2']:
-        filter.update(criterion['value'])
-    elif isinstance(criterion['value'], list):
-        filter['value'] = list(map(lambda v: v['id'], criterion['value']))
+    value = criterion.get('value', '')
+    if isinstance(value, dict) and 'depth' in value:
+        filter['value'] = list(map(lambda v: v['id'], value['items']))
+        filter['depth'] = value['depth']
+    elif isinstance(value, dict) and not value.keys() - ['value', 'value2']:
+        filter.update(value)
+    elif isinstance(value, list):
+        filter['value'] = list(map(lambda v: v['id'], value))
     else:
-        filter['value'] = criterion['value']
+        filter['value'] = value
 
     return filter
