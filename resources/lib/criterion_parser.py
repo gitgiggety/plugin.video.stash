@@ -7,7 +7,11 @@ def parse(criterions):
     for json_criterion in criterions:
         criterion = json.loads(json_criterion)
 
-        filter[criterion['type']] = parse_criterion(criterion)
+        type = criterion['type']
+        if type in ('sceneIsMissing', 'imageIsMissing', 'performerIsMissing', 'galleryIsMissing', 'tagIsMissing', 'studioIsMissing', 'studioIsMissing'):
+            filter['is_missing'] = criterion['value']
+        else:
+            filter[type] = parse_criterion(criterion)
 
     return filter
 
