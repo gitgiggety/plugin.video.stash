@@ -59,3 +59,17 @@ support. As an alternative you can edit the settings file manually.
 2. Open file `addon_data/plugin.video.stash/settings.xml`
 3. Change line `<setting id="api_key" default="true" />` to `<setting
    id="api_key">[your API Key]</setting>`
+
+### Disable HTTP2
+If you have issues with playback feezing Kodi you need to disable HTTP2 in 
+[advancedsettings.xml](https://kodi.wiki/view/Advancedsettings.xml#network).
+
+Example advancedsettings.xml file:
+
+```
+<advancedsettings version="1.0">
+    <network>
+      <disablehttp2>true</disablehttp2>       
+    </network>    
+</advancedsettings>
+```
