@@ -116,13 +116,14 @@ class Listing(ABC):
     def _create_item_from_filter(self, filter: dict, override_title=None) -> [(xbmcgui.ListItem, str)]:
         title = override_title if override_title is not None else filter['name']
         item = xbmcgui.ListItem(label=title)
-        filter_data = json.loads(filter['filter'])
-        criterion_json = json.dumps(criterion_parser.parse(filter_data['c']))
+        find_filter = filter['find_filter']
+        object_filter = filter['object_filter']
+        criterion_json = json.dumps(criterion_parser.parse(object_filter))
 
         url = utils.get_url(list=self._type,
                             title=title,
                             criterion=criterion_json,
-                            sort_field=filter_data.get('sortby'),
-                            sort_dir=filter_data.get('sortdir')
+                            sort_field=find_filter.get('sort'),
+                            sort_dir=find_filter.get('direction')
                             )
         return item, url

@@ -336,8 +336,15 @@ query findSceneMarkers($markers_filter: SceneMarkerFilterType, $filter: FindFilt
         query = """
 query findSavedFilters($mode: FilterMode!) {
     findSavedFilters(mode: $mode) {
-        name
-        filter
+        name,
+        object_filter,
+        find_filter {
+          q
+          page
+          per_page
+          sort
+          direction
+      }
     }
 }
 """
@@ -352,8 +359,15 @@ query findSavedFilters($mode: FilterMode!) {
         query = """
 query findDefaultFilter($mode: FilterMode!) {
     findDefaultFilter(mode: $mode) {
-        name
-        filter
+        name,
+        object_filter,
+        find_filter {
+          q
+          page
+          per_page
+          sort
+          direction
+      }
     }
 }
 """
