@@ -20,7 +20,7 @@ def parse_criterion(criterion):
 
     value = criterion.get('value', '')
     if isinstance(value, dict) and 'depth' in value:
-        if 'items' in value:
+        if 'items' in value and value['items'] is not None:
             filter['value'] = list(map(lambda v: v['id'], value['items']))
 
         if 'excluded' in value:
@@ -31,7 +31,7 @@ def parse_criterion(criterion):
         filter.update(value)
     elif isinstance(value, list):
         filter['value'] = list(map(lambda v: v['id'], value))
-    else:
+    elif value is not '':
         filter['value'] = value
 
     return filter
