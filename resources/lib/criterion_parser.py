@@ -21,20 +21,19 @@ def parse_criterion(criterion, value_transformer):
     filter['modifier'] = criterion['modifier']
 
     value = criterion.get('value', '')
-    if isinstance(value, dict) and 'depth' in value:
+    if isinstance(value, dict) and not value.keys() - ['items', 'excluded', 'depth']:
         if value.get('items') is not None:
             filter['value'] = list(map(lambda v: v['id'], value['items']))
 
         if value.get('excluded') is not None:
             filter['excludes'] = list(map(lambda v: v['id'], value['excluded']))
 
-        filter['depth'] = value['depth']
+        if value.get('depth') is not None:
+            filter['depth'] = value['depth']
     elif isinstance(value, dict) and not value.keys() - ['value', 'value2']:
         filter['value'] = value_transformer(value['value'])
         if 'value2' in value:
             filter['value2'] = value_transformer(value['value2'])
-    elif isinstance(value, list):
-        filter['value'] = list(map(lambda v: v['id'], value))
     elif isinstance(value, dict) and not value.keys() - ['endpoint', 'stashID']:
         filter['endpoint'] = value.get('endpoint')
         filter['stash_id'] = value.get('stashID')
