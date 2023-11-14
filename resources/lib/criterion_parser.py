@@ -31,7 +31,10 @@ def parse_criterion(criterion):
         filter.update(value)
     elif isinstance(value, list):
         filter['value'] = list(map(lambda v: v['id'], value))
-    elif 'value' in criterion:
+    elif isinstance(value, dict) and not value.keys() - ['endpoint', 'stashID']:
+        filter['endpoint'] = value.get('endpoint')
+        filter['stash_id'] = value.get('stashID')
+    else:
         filter['value'] = value
 
     return filter
