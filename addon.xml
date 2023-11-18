@@ -18,9 +18,11 @@
         <email>gitgiggety@outlook.com</email>
         <source>https://github.com/gitgiggety/plugin.video.stash</source>
         <news>
-v0.0.8 (2023-11-12):
-- Add support for Stash 0.23
-- Drop support Stash 0.22 and below
+v0.0.9 (2023-11-18):
+- Fix support for filters with no value
+- Fix handing of stash_id_endpoint criterion
+- Fix timestamp criterions with a space separator not filtering on time
+- Fix support for "list" criterions (includes / excludes) without depth
         </news>
         <assets>
             <icon>resources/stash_logo.png</icon>
