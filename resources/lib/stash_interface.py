@@ -19,7 +19,8 @@ class StashInterface:
 
     def add_api_key(self, url: str):
         if self._api_key:
-            url = "{}{}apikey={}".format(url, '&' if '?' in url else '?', urllib.parse.quote(self._api_key))
+            url = "{}{}apikey={}".format(
+                url, '&' if '?' in url else '?', urllib.parse.quote(self._api_key))
 
         return url
 
@@ -34,7 +35,8 @@ class StashInterface:
             result = response.json()
             if result.get("errors", None):
                 for error in result["errors"]:
-                    raise Exception("GraphQL error: {}".format(error['message']))
+                    raise Exception(
+                        "GraphQL error: {}".format(error['message']))
             if result.get("data", None):
                 return result.get("data")
         else:
@@ -51,13 +53,13 @@ query findScenes($scene_filter: SceneFilterType, $filter: FindFilterType!) {
       id
       title
       details
-      rating
+      rating100
       date
       created_at
       paths {
         screenshot
       }
-      file {
+      files {
         duration
         video_codec
         audio_codec
@@ -101,14 +103,20 @@ query findScene($id: ID) {
     id
     title
     details
-    rating
+    rating100
     date
     created_at
+    sceneStreams {
+      url
+      mime_type
+      label
+      __typename
+    }
     paths {
       stream
       screenshot
     }
-    file {
+    files {
       duration
       video_codec
       audio_codec
@@ -133,13 +141,13 @@ query findScene($id: ID) {
         id
         title
         details
-        rating
+        rating100
         date
         created_at
         paths {
           screenshot
         }
-        file {
+        files {
           duration
           video_codec
           audio_codec
@@ -197,7 +205,7 @@ query findPerformers($performer_filter: PerformerFilterType, $filter: FindFilter
                     'modifier': 'GREATER_THAN',
                     'value': 0,
                 }
-            }
+        }
         }
 
         result = self.__call_graphql(query, variables)
@@ -262,7 +270,7 @@ query findStudios($studio_filter: StudioFilterType, $filter: FindFilterType!) {
                     'modifier': 'GREATER_THAN',
                     'value': 0,
                 }
-            }
+        }
         }
 
         result = self.__call_graphql(query, variables)
@@ -283,13 +291,13 @@ query findSceneMarkers($markers_filter: SceneMarkerFilterType, $filter: FindFilt
         id
         title
         details
-        rating
+        rating100
         date
         created_at
         paths {
           screenshot
         }
-        file {
+        files {
           duration
           video_codec
           audio_codec

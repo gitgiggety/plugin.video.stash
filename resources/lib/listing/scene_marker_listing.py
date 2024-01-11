@@ -8,13 +8,15 @@ from ..navigation import NavigationItem, PerformerItem, TagItem
 
 class SceneMarkerListing(Listing):
     def __init__(self, client: StashInterface):
-        Listing.__init__(self, client, 'scene_markers', local.get_localized(30010), filter_type='SCENE_MARKERS')
+        Listing.__init__(self, client, 'scene_markers', local.get_localized(
+            30010), filter_type='SCENE_MARKERS')
 
     def get_navigation(self) -> [NavigationItem]:
         return [
             PerformerItem(self._client, 'scene_markers'),
             TagItem(self._client, 'scene_markers'),
-            TagItem(self._client, 'scene_markers', type='scene_tags', label=local.get_localized(30012)),
+            TagItem(self._client, 'scene_markers', type='scene_tags',
+                    label=local.get_localized(30012)),
         ]
 
     def get_navigation_item(self, params: dict) -> Optional[NavigationItem]:
@@ -30,19 +32,24 @@ class SceneMarkerListing(Listing):
         if 'scene' in params:
             scene = self._client.find_scene(params['scene'])
 
-            self._set_title('{} {}'.format(local.get_localized(30011), scene['title']))
+            self._set_title('{} {}'.format(
+                local.get_localized(30011), scene['title']))
             markers = scene['scene_markers']
         else:
-            (_, markers) = self._client.find_scene_markers(criterion, sort_field, sort_dir)
+            (_, markers) = self._client.find_scene_markers(
+                criterion, sort_field, sort_dir)
 
         items = []
         for marker in markers:
-            title = '{} - {}'.format(marker['title'], marker['primary_tag']['name'])
-            item = self._create_item(marker['scene'], title=title, screenshot=marker['screenshot'])
+            title = '{} - {}'.format(marker['title'],
+                                     marker['primary_tag']['name'])
+            item = self._create_item(
+                marker['scene'], title=title, screenshot=marker['screenshot'])
             url = self._create_play_url(marker['scene']['id'])
 
-            duration = marker['scene']['file']['duration']
-            item.setProperty('StartPercent', str(round(marker['seconds'] / duration * 100, 2)))
+            duration = marker['scene']['files'][0]['duration']
+            item.setProperty('StartPercent', str(
+                round(marker['seconds'] / duration * 100, 2)))
 
             items.append((item, url))
 

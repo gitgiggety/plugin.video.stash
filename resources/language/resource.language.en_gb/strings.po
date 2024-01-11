@@ -64,3 +64,16 @@ msgstr ""
 msgctxt "#30012"
 msgid "Scene Tags"
 msgstr ""
+
+
+msgctxt "#30013"
+msgid "Server Settings"
+msgstr ""
+
+msgctxt "#30014"
+msgid "Playback Settings"
+msgstr ""
+
+msgctxt "#30015"
+msgid "Max Resolution"
+msgstr ""

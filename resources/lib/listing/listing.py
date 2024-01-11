@@ -22,7 +22,8 @@ class Listing(ABC):
     def list_items(self, params: dict):
         title = params['title'] if 'title' in params else self._label
 
-        criterion = json.loads(params['criterion']) if 'criterion' in params else {}
+        criterion = json.loads(
+            params['criterion']) if 'criterion' in params else {}
         sort_field = params['sort_field'] if 'sort_field' in params else None
         sort_dir = params['sort_dir'] if 'sort_dir' in params else 'asc'
 
@@ -36,7 +37,8 @@ class Listing(ABC):
         xbmcplugin.endOfDirectory(self.handle)
 
     def get_root_item(self, override_title: str = "") -> (xbmcgui.ListItem, str):
-        item = xbmcgui.ListItem(label=override_title if override_title != "" else self._label)
+        item = xbmcgui.ListItem(
+            label=override_title if override_title != "" else self._label)
         url = utils.get_url(list=self._type)
 
         return item, url
@@ -48,7 +50,8 @@ class Listing(ABC):
         items = []
         default_filter = self._client.find_default_filter(self._filter_type)
         if default_filter is not None:
-            items.append(self._create_item_from_filter(default_filter, local.get_localized(30007)))
+            items.append(self._create_item_from_filter(
+                default_filter, local.get_localized(30007)))
         else:
             item = xbmcgui.ListItem(label=local.get_localized(30007))
             url = utils.get_url(list=self._type)
@@ -77,8 +80,9 @@ class Listing(ABC):
         title = kwargs['title'] if 'title' in kwargs else scene['title']
         screenshot = kwargs['screenshot'] if 'screenshot' in kwargs else scene['paths']['screenshot']
         # * 2 because rating is 1 to 5 and Kodi uses 1 to 10
-        rating = scene['rating'] * 2 if 'rating' in scene and scene['rating'] is not None else 0
-        duration = int(scene['file']['duration'])
+        rating = scene['rating'] * \
+            2 if 'rating' in scene and scene['rating'] is not None else 0
+        duration = int(scene['files'][0]['duration'])
         item = xbmcgui.ListItem(label=title)
         item.setInfo('video', {'title': title,
                                'mediatype': 'video',
@@ -92,12 +96,13 @@ class Listing(ABC):
                                'dateadded': scene['created_at']
                                })
 
-        item.addStreamInfo('video', {'codec': scene['file']['video_codec'],
-                                     'width': scene['file']['width'],
-                                     'height': scene['file']['height'],
+        item.addStreamInfo('video', {'codec': scene['files'][0]['video_codec'],
+                                     'width': scene['files'][0]['width'],
+                                     'height': scene['files'][0]['height'],
                                      'duration': duration})
 
-        item.addStreamInfo('audio', {'codec': scene['file']['audio_codec']})
+        item.addStreamInfo(
+            'audio', {'codec': scene['files'][0]['audio_codec']})
 
         screenshot = self._client.add_api_key(screenshot)
         item.setArt({'thumb': screenshot, 'fanart': screenshot})
