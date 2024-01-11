@@ -108,6 +108,12 @@ query findScene($id: ID) {
     rating100
     date
     created_at
+    sceneStreams {
+      url
+      mime_type
+      label
+      __typename
+    }
     paths {
       stream
       screenshot
