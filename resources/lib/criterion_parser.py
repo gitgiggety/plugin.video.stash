@@ -1,16 +1,39 @@
 import json
 
+resolution_map = {
+    "144p": "VERY_LOW",
+    "240p": "LOW",
+    "360p": "R360P",
+    "480p": "STANDARD",
+    "540p": "WEB_HD",
+    "720p": "STANDARD_HD",
+    "1080p": "FULL_HD",
+    "1440p": "QUAD_HD",
+    "4k": "FOUR_K",
+    "5k": "FIVE_K",
+    "6k": "SIX_K",
+    "7k": "SEVEN_K",
+    "8k":   "EIGHT_K",
+    "Huge": "HUGE",
+}
 
 def parse(criterions):
     filter = {}
 
-    for criterion in criterions:
-        if criterion in ('sceneIsMissing', 'imageIsMissing', 'performerIsMissing', 'galleryIsMissing', 'tagIsMissing', 'studioIsMissing', 'studioIsMissing'):
-            filter['is_missing'] = criterion['value']
+    for name, criterion in criterions.items():
+        if name in ('is_missing', 'has_markers'):
+            filter[name] = criterion['value']
+        elif name in ('organized', 'performer_favorite', 'interactive'):
+            filter[name] = criterion['value'] == 'true'
         else:
-            is_timestamp_field = criterion in ('created_at', 'updated_at', 'scene_created_at', 'scene_updated_at')
-            value_transformer = (lambda v: v.replace(' ', 'T') if isinstance(v, str) else v) if is_timestamp_field else lambda v: v
-            filter[criterion] = parse_criterion(criterions[criterion], value_transformer)
+            if name in ('resolution'):
+                value_transformer = lambda v: resolution_map.get(v, '')
+            elif name in ('created_at', 'updated_at', 'scene_created_at', 'scene_updated_at'):
+                value_transformer = lambda v: v.replace(' ', 'T') if isinstance(v, str) else v
+            else:
+                value_transformer = lambda v: v
+
+            filter[name] = parse_criterion(criterion, value_transformer)
 
     return filter
 
