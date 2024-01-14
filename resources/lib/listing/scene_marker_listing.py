@@ -41,7 +41,7 @@ class SceneMarkerListing(Listing):
             item = self._create_item(marker['scene'], title=title, screenshot=marker['screenshot'])
             url = self._create_play_url(marker['scene']['id'])
 
-            duration = marker['scene']['file']['duration']
+            duration = marker['scene']['files'][0]['duration']
             item.setProperty('StartPercent', str(round(marker['seconds'] / duration * 100, 2)))
 
             items.append((item, url))

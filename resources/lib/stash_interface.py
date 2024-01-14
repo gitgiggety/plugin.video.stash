@@ -51,13 +51,13 @@ query findScenes($scene_filter: SceneFilterType, $filter: FindFilterType!) {
       id
       title
       details
-      rating
+      rating100
       date
       created_at
       paths {
         screenshot
       }
-      file {
+      files {
         duration
         video_codec
         audio_codec
@@ -101,14 +101,14 @@ query findScene($id: ID) {
     id
     title
     details
-    rating
+    rating100
     date
     created_at
     paths {
       stream
       screenshot
     }
-    file {
+    files {
       duration
       video_codec
       audio_codec
@@ -133,13 +133,13 @@ query findScene($id: ID) {
         id
         title
         details
-        rating
+        rating100
         date
         created_at
         paths {
           screenshot
         }
-        file {
+        files {
           duration
           video_codec
           audio_codec
@@ -283,13 +283,13 @@ query findSceneMarkers($markers_filter: SceneMarkerFilterType, $filter: FindFilt
         id
         title
         details
-        rating
+        rating100
         date
         created_at
         paths {
           screenshot
         }
-        file {
+        files {
           duration
           video_codec
           audio_codec

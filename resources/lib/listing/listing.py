@@ -76,9 +76,10 @@ class Listing(ABC):
     def _create_item(self, scene: dict, **kwargs):
         title = kwargs['title'] if 'title' in kwargs else scene['title']
         screenshot = kwargs['screenshot'] if 'screenshot' in kwargs else scene['paths']['screenshot']
-        # * 2 because rating is 1 to 5 and Kodi uses 1 to 10
-        rating = scene['rating'] * 2 if 'rating' in scene and scene['rating'] is not None else 0
-        duration = int(scene['file']['duration'])
+        file = scene['files'][0]
+        # / 10 because rating is 1 to 100 and Kodi uses 1 to 10
+        rating = round(scene['rating100'] / 10 if 'rating100' in scene and scene['rating100'] is not None else 0)
+        duration = int(file['duration'])
         item = xbmcgui.ListItem(label=title)
         item.setInfo('video', {'title': title,
                                'mediatype': 'video',
@@ -92,12 +93,12 @@ class Listing(ABC):
                                'dateadded': scene['created_at']
                                })
 
-        item.addStreamInfo('video', {'codec': scene['file']['video_codec'],
-                                     'width': scene['file']['width'],
-                                     'height': scene['file']['height'],
+        item.addStreamInfo('video', {'codec': file['video_codec'],
+                                     'width': file['width'],
+                                     'height': file['height'],
                                      'duration': duration})
 
-        item.addStreamInfo('audio', {'codec': scene['file']['audio_codec']})
+        item.addStreamInfo('audio', {'codec': file['audio_codec']})
 
         screenshot = self._client.add_api_key(screenshot)
         item.setArt({'thumb': screenshot, 'fanart': screenshot})
