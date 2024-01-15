@@ -89,11 +89,13 @@ class Listing(ABC):
                                'plot': scene['details'],
                                'cast': list(map(lambda p: p['name'], scene['performers'])),
                                'duration': duration,
+                               'playcount': scene.get("play_count", 0),
                                'studio': scene['studio']['name'] if scene['studio'] is not None else None,
                                'userrating': rating,
                                'premiered': scene['date'],
                                'tag': list(map(lambda t: t['name'], scene['tags'])),
-                               'dateadded': scene['created_at']
+                               'dateadded': scene['created_at'],
+                               'lastplayed': scene["last_played_at"]
                                })
 
         item.addStreamInfo('video', {'codec': scene['files'][0]['video_codec'],
@@ -105,7 +107,12 @@ class Listing(ABC):
             'audio', {'codec': scene['files'][0]['audio_codec']})
 
         screenshot = self._client.add_api_key(screenshot)
-        item.setArt({'thumb': screenshot, 'fanart': screenshot})
+        art_dict = {'thumb': screenshot, 'fanart': screenshot}
+        if scene['studio']:
+            art_dict["banner"] = scene["studio"]["image_path"]
+        item.setArt(art_dict)
+        item.setProperty(
+            'ResumeTime', str(0.0 if not scene["resume_time"] else float(scene["resume_time"])))
         item.setProperty('IsPlayable', 'true')
 
         return item
