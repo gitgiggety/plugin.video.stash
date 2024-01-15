@@ -6,7 +6,6 @@ import xbmcaddon
 import xbmcgui
 import xbmcplugin
 from resources.lib import utils
-from resources.lib.utils import logger
 from resources.lib.listing import create_listing, Listing, SceneListing
 from resources.lib.navigation import NavigationItem
 from resources.lib.stash_interface import StashInterface

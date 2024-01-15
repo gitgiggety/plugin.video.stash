@@ -1,6 +1,5 @@
 import json
 from resources.lib.utils.resolutions import Resolution_map
-from resources.lib.utils import logger
 
 """ elif "resolution" == criterion:
             val = criterion["resolution"]["modifier"]["value"]
