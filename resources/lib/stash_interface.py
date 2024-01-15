@@ -54,6 +54,9 @@ query findScenes($scene_filter: SceneFilterType, $filter: FindFilterType!) {
       rating100
       date
       created_at
+      play_count
+      resume_time
+      last_played_at
       paths {
         screenshot
       }
@@ -66,6 +69,7 @@ query findScenes($scene_filter: SceneFilterType, $filter: FindFilterType!) {
       }
       studio {
         name
+        image_path
       }
       performers {
         name
