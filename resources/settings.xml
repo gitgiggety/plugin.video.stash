@@ -5,7 +5,7 @@
         <setting label="30001" type="text" id="api_key" option="hidden" default=""/>
     </category>
     <category label="30014">
-        <setting id="res" type="select" label="30014" values="Original|4k|FHD|720p|SD" default="Original"/>
+        <setting id="res" type="select" label="30015" values="Original|4k|FHD|720p|SD" default="Original"/>
     </category>
 
 </settings>
