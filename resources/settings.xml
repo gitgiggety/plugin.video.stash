@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <settings>
-    <category>
+    <category label="30013">
         <setting label="30000" type="text" id="base_url" default="http://localhost:9999/"/>
         <setting label="30001" type="text" id="api_key" option="hidden" default=""/>
     </category>
+    <category label="30014">
+        <setting id="res" type="select" label="30015" values="Original|4k|FHD|720p|SD" default="Original"/>
+    </category>
+
 </settings>

@@ -76,31 +76,38 @@ class Listing(ABC):
     def _create_item(self, scene: dict, **kwargs):
         title = kwargs['title'] if 'title' in kwargs else scene['title']
         screenshot = kwargs['screenshot'] if 'screenshot' in kwargs else scene['paths']['screenshot']
-        # * 2 because rating is 1 to 5 and Kodi uses 1 to 10
-        rating = scene['rating'] * 2 if 'rating' in scene and scene['rating'] is not None else 0
-        duration = int(scene['file']['duration'])
+        file = scene['files'][0]
+        # / 10 because rating is 1 to 100 and Kodi uses 1 to 10
+        rating = round(scene['rating100'] / 10 if 'rating100' in scene and scene['rating100'] is not None else 0)
+        duration = int(file['duration'])
         item = xbmcgui.ListItem(label=title)
         item.setInfo('video', {'title': title,
                                'mediatype': 'video',
                                'plot': scene['details'],
                                'cast': list(map(lambda p: p['name'], scene['performers'])),
                                'duration': duration,
+                               'playcount': scene.get("play_count", 0),
                                'studio': scene['studio']['name'] if scene['studio'] is not None else None,
                                'userrating': rating,
                                'premiered': scene['date'],
                                'tag': list(map(lambda t: t['name'], scene['tags'])),
-                               'dateadded': scene['created_at']
+                               'dateadded': scene['created_at'],
+                               'lastplayed': scene["last_played_at"]
                                })
 
-        item.addStreamInfo('video', {'codec': scene['file']['video_codec'],
-                                     'width': scene['file']['width'],
-                                     'height': scene['file']['height'],
+        item.addStreamInfo('video', {'codec': file['video_codec'],
+                                     'width': file['width'],
+                                     'height': file['height'],
                                      'duration': duration})
 
-        item.addStreamInfo('audio', {'codec': scene['file']['audio_codec']})
+        item.addStreamInfo('audio', {'codec': file['audio_codec']})
 
         screenshot = self._client.add_api_key(screenshot)
-        item.setArt({'thumb': screenshot, 'fanart': screenshot})
+        art_dict = {'thumb': screenshot, 'fanart': screenshot}
+        if scene['studio']:
+            art_dict["banner"] = scene["studio"]["image_path"]
+        item.setArt(art_dict)
+        item.setProperty('ResumeTime', str(0.0 if not scene["resume_time"] else float(scene["resume_time"])))
         item.setProperty('IsPlayable', 'true')
 
         return item
