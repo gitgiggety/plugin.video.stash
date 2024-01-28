@@ -18,9 +18,11 @@
         <email>gitgiggety@outlook.com</email>
         <source>https://github.com/gitgiggety/plugin.video.stash</source>
         <news>
-v0.0.8 (2023-11-12):
-- Add support for Stash 0.23
-- Drop support Stash 0.22 and below
+v0.0.10 (2024-01-28):
+- Add support for Stash 0.24
+- Drop support Stash 0.23 and below
+- Add additional information to items (playcount, resumepoint, last played and studio image)
+- Add support for playback of lower resolution with server transcoding (using DASH)
         </news>
         <assets>
             <icon>resources/stash_logo.png</icon>
