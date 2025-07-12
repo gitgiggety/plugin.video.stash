@@ -60,6 +60,9 @@ def parse_criterion(criterion, value_transformer):
     elif isinstance(value, dict) and not value.keys() - ['endpoint', 'stashID']:
         filter['endpoint'] = value.get('endpoint')
         filter['stash_id'] = value.get('stashID')
+    elif isinstance(value, dict) and not value.keys() - ['value', 'distance']:
+        filter['value'] = value['value']
+        filter['distance'] = value['distance']
     else:
         filter['value'] = value_transformer(value)
 

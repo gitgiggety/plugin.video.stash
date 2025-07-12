@@ -61,6 +61,7 @@ query findScenes($scene_filter: SceneFilterType, $filter: FindFilterType!) {
         screenshot
       }
       files {
+        basename
         duration
         video_codec
         audio_codec
@@ -119,6 +120,7 @@ query findScene($id: ID) {
       screenshot
     }
     files {
+      basename
       duration
       video_codec
       audio_codec
@@ -150,6 +152,7 @@ query findScene($id: ID) {
           screenshot
         }
         files {
+          basename
           duration
           video_codec
           audio_codec
@@ -300,6 +303,7 @@ query findSceneMarkers($markers_filter: SceneMarkerFilterType, $filter: FindFilt
           screenshot
         }
         files {
+          basename
           duration
           video_codec
           audio_codec

@@ -10,6 +10,12 @@ from resources.lib.utils import local
 from resources.lib.navigation import NavigationItem
 
 
+def to_ddmmyyy(yyyymmdd: str):
+    if yyyymmdd is None:
+        return None
+    return yyyymmdd[8:] + "-" + yyyymmdd[5:7] + "-" + yyyymmdd[:4]
+
+
 class Listing(ABC):
     handle: int
 
@@ -32,7 +38,8 @@ class Listing(ABC):
         for (item, url) in self._create_items(criterion, sort_field, sort_dir, params):
             xbmcplugin.addDirectoryItem(self.handle, url, item, False)
 
-        xbmcplugin.addSortMethod(self.handle, xbmcplugin.SORT_METHOD_NONE)
+        xbmcplugin.addSortMethod(self.handle, xbmcplugin.SORT_METHOD_VIDEO_SORT_TITLE)
+        xbmcplugin.addSortMethod(self.handle, xbmcplugin.SORT_METHOD_DATE)
         xbmcplugin.endOfDirectory(self.handle)
 
     def get_root_item(self, override_title: str = "") -> (xbmcgui.ListItem, str):
@@ -77,6 +84,8 @@ class Listing(ABC):
         title = kwargs['title'] if 'title' in kwargs else scene['title']
         screenshot = kwargs['screenshot'] if 'screenshot' in kwargs else scene['paths']['screenshot']
         file = scene['files'][0]
+        if not title and file is not None:
+            title = file['basename']
         # / 10 because rating is 1 to 100 and Kodi uses 1 to 10
         rating = round(scene['rating100'] / 10 if 'rating100' in scene and scene['rating100'] is not None else 0)
         duration = int(file['duration'])
@@ -90,6 +99,7 @@ class Listing(ABC):
                                'studio': scene['studio']['name'] if scene['studio'] is not None else None,
                                'userrating': rating,
                                'premiered': scene['date'],
+                               'date': to_ddmmyyy(scene['date']),
                                'tag': list(map(lambda t: t['name'], scene['tags'])),
                                'dateadded': scene['created_at'],
                                'lastplayed': scene["last_played_at"]

@@ -20,7 +20,7 @@ jobs:
           cd /tmp/
           zip -r plugin.video.stash.zip plugin.video.stash/
       - name: Upload
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: plugin.video.stash.zip
           path: /tmp/plugin.video.stash.zip
