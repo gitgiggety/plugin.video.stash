@@ -66,6 +66,7 @@ query findScenes($scene_filter: SceneFilterType, $filter: FindFilterType!) {
         audio_codec
         width
         height
+        path
       }
       studio {
         name
@@ -124,6 +125,7 @@ query findScene($id: ID) {
       audio_codec
       width
       height
+      path
     }
     studio {
       name
@@ -155,6 +157,7 @@ query findScene($id: ID) {
           audio_codec
           width
           height
+          path
         }
         studio {
           name
@@ -296,6 +299,8 @@ query findSceneMarkers($markers_filter: SceneMarkerFilterType, $filter: FindFilt
         rating100
         date
         created_at
+        resume_time
+        last_played_at
         paths {
           screenshot
         }
@@ -305,9 +310,11 @@ query findSceneMarkers($markers_filter: SceneMarkerFilterType, $filter: FindFilt
           audio_codec
           width
           height
+          path
         }
         studio {
           name
+          image_path
         }
         performers {
           name
