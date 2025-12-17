@@ -1,4 +1,5 @@
 import json
+import os.path
 from abc import ABC, abstractmethod
 from typing import Optional
 import xbmcgui
@@ -74,7 +75,8 @@ class Listing(ABC):
         pass
 
     def _create_item(self, scene: dict, **kwargs):
-        title = kwargs['title'] if 'title' in kwargs else scene['title']
+        title = kwargs['title'] if 'title' in kwargs else scene['title'] \
+            if not scene['title'] == '' else os.path.split(scene['files'][0]['path'])[1]
         screenshot = kwargs['screenshot'] if 'screenshot' in kwargs else scene['paths']['screenshot']
         file = scene['files'][0]
         # / 10 because rating is 1 to 100 and Kodi uses 1 to 10
