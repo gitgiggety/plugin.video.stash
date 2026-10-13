@@ -77,3 +77,207 @@ msgstr ""
 msgctxt "#30015"
 msgid "Max Resolution"
 msgstr ""
+
+msgctxt "#30016"
+msgid "Search"
+msgstr ""
+
+msgctxt "#30017"
+msgid "Recently added"
+msgstr ""
+
+msgctxt "#30018"
+msgid "Continue watching"
+msgstr ""
+
+msgctxt "#30019"
+msgid "Recently played"
+msgstr ""
+
+msgctxt "#30020"
+msgid "Random"
+msgstr ""
+
+msgctxt "#30021"
+msgid "Favourite performers"
+msgstr ""
+
+msgctxt "#30022"
+msgid "Next page"
+msgstr ""
+
+msgctxt "#30023"
+msgid "page {} of {}"
+msgstr ""
+
+msgctxt "#30024"
+msgid "Sort by…"
+msgstr ""
+
+msgctxt "#30025"
+msgid "Title"
+msgstr ""
+
+msgctxt "#30026"
+msgid "Date added"
+msgstr ""
+
+msgctxt "#30027"
+msgid "Date"
+msgstr ""
+
+msgctxt "#30028"
+msgid "Rating"
+msgstr ""
+
+msgctxt "#30029"
+msgid "Play count"
+msgstr ""
+
+msgctxt "#30030"
+msgid "Last played"
+msgstr ""
+
+msgctxt "#30031"
+msgid "Duration"
+msgstr ""
+
+msgctxt "#30032"
+msgid "O-counter"
+msgstr ""
+
+msgctxt "#30033"
+msgid "Reverse order"
+msgstr ""
+
+msgctxt "#30034"
+msgid "Items per page"
+msgstr ""
+
+msgctxt "#30035"
+msgid "Interface"
+msgstr ""
+
+msgctxt "#30036"
+msgid "{} scenes"
+msgstr ""
+
+msgctxt "#30037"
+msgid "Search scenes"
+msgstr ""
+
+msgctxt "#30038"
+msgid "Favourite tags"
+msgstr ""
+
+msgctxt "#30039"
+msgid "Add to favourites"
+msgstr ""
+
+msgctxt "#30040"
+msgid "Remove from favourites"
+msgstr ""
+
+msgctxt "#30041"
+msgid "Rate…"
+msgstr ""
+
+msgctxt "#30042"
+msgid "Performers in scene…"
+msgstr ""
+
+msgctxt "#30043"
+msgid "No rating"
+msgstr ""
+
+msgctxt "#30044"
+msgid "Add or remove favourite performer"
+msgstr ""
+
+msgctxt "#30045"
+msgid "added to favourites"
+msgstr ""
+
+msgctxt "#30046"
+msgid "removed from favourites"
+msgstr ""
+
+msgctxt "#30047"
+msgid "Resume from"
+msgstr ""
+
+msgctxt "#30048"
+msgid "Play from beginning"
+msgstr ""
+
+msgctxt "#30049"
+msgid "Play next scene automatically"
+msgstr ""
+
+msgctxt "#30050"
+msgid "1 star"
+msgstr ""
+
+msgctxt "#30051"
+msgid "{} stars"
+msgstr ""
+
+msgctxt "#30052"
+msgid "favourite"
+msgstr ""
+
+msgctxt "#30053"
+msgid "Show scenes"
+msgstr ""
+
+msgctxt "#30054"
+msgid "Information"
+msgstr ""
+
+msgctxt "#30055"
+msgid "Aliases"
+msgstr ""
+
+msgctxt "#30056"
+msgid "Born"
+msgstr ""
+
+msgctxt "#30057"
+msgid "Died"
+msgstr ""
+
+msgctxt "#30058"
+msgid "Country"
+msgstr ""
+
+msgctxt "#30059"
+msgid "Ethnicity"
+msgstr ""
+
+msgctxt "#30060"
+msgid "Hair colour"
+msgstr ""
+
+msgctxt "#30061"
+msgid "Eye colour"
+msgstr ""
+
+msgctxt "#30062"
+msgid "Height"
+msgstr ""
+
+msgctxt "#30063"
+msgid "Measurements"
+msgstr ""
+
+msgctxt "#30064"
+msgid "Career"
+msgstr ""
+
+msgctxt "#30065"
+msgid "Tattoos"
+msgstr ""
+
+msgctxt "#30066"
+msgid "Piercings"
+msgstr ""

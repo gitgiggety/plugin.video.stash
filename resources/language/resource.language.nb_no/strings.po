@@ -1,0 +1,283 @@
+# Kodi Media Center language file
+# Addon Name: Stash Kodi Plugin
+# Addon id: plugin.video.stash
+# Addon Provider: gitgiggety
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Addons\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: nb_NO\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#30000"
+msgid "Base URL"
+msgstr "Grunnadresse"
+
+msgctxt "#30001"
+msgid "API Key"
+msgstr "API-nøkkel"
+
+msgctxt "#30002"
+msgid "All"
+msgstr "Alle"
+
+msgctxt "#30003"
+msgid "Performers"
+msgstr "Utøvere"
+
+msgctxt "#30004"
+msgid "Tags"
+msgstr "Tagger"
+
+msgctxt "#30005"
+msgid "Studios"
+msgstr "Studioer"
+
+msgctxt "#30006"
+msgid "Scenes"
+msgstr "Scener"
+
+msgctxt "#30007"
+msgid "Default"
+msgstr "Standard"
+
+msgctxt "#30008"
+msgid "Increment O-counter"
+msgstr "Øk O-telleren"
+
+msgctxt "#30009"
+msgid "Incremented O-counter to"
+msgstr "O-telleren økt til"
+
+msgctxt "#30010"
+msgid "Markers"
+msgstr "Markører"
+
+msgctxt "#30011"
+msgid "Markers of"
+msgstr "Markører i"
+
+msgctxt "#30012"
+msgid "Scene Tags"
+msgstr "Scenetagger"
+
+
+msgctxt "#30013"
+msgid "Server Settings"
+msgstr "Serverinnstillinger"
+
+msgctxt "#30014"
+msgid "Playback Settings"
+msgstr "Avspillingsinnstillinger"
+
+msgctxt "#30015"
+msgid "Max Resolution"
+msgstr "Maks oppløsning"
+
+msgctxt "#30016"
+msgid "Search"
+msgstr "Søk"
+
+msgctxt "#30017"
+msgid "Recently added"
+msgstr "Nylig lagt til"
+
+msgctxt "#30018"
+msgid "Continue watching"
+msgstr "Fortsett å se"
+
+msgctxt "#30019"
+msgid "Recently played"
+msgstr "Sist sett"
+
+msgctxt "#30020"
+msgid "Random"
+msgstr "Tilfeldig"
+
+msgctxt "#30021"
+msgid "Favourite performers"
+msgstr "Favoritt-utøvere"
+
+msgctxt "#30022"
+msgid "Next page"
+msgstr "Neste side"
+
+msgctxt "#30023"
+msgid "page {} of {}"
+msgstr "side {} av {}"
+
+msgctxt "#30024"
+msgid "Sort by…"
+msgstr "Sorter etter …"
+
+msgctxt "#30025"
+msgid "Title"
+msgstr "Tittel"
+
+msgctxt "#30026"
+msgid "Date added"
+msgstr "Lagt til"
+
+msgctxt "#30027"
+msgid "Date"
+msgstr "Dato"
+
+msgctxt "#30028"
+msgid "Rating"
+msgstr "Vurdering"
+
+msgctxt "#30029"
+msgid "Play count"
+msgstr "Antall avspillinger"
+
+msgctxt "#30030"
+msgid "Last played"
+msgstr "Sist avspilt"
+
+msgctxt "#30031"
+msgid "Duration"
+msgstr "Varighet"
+
+msgctxt "#30032"
+msgid "O-counter"
+msgstr "O-teller"
+
+msgctxt "#30033"
+msgid "Reverse order"
+msgstr "Snu rekkefølgen"
+
+msgctxt "#30034"
+msgid "Items per page"
+msgstr "Elementer per side"
+
+msgctxt "#30035"
+msgid "Interface"
+msgstr "Grensesnitt"
+
+msgctxt "#30036"
+msgid "{} scenes"
+msgstr "{} scener"
+
+msgctxt "#30037"
+msgid "Search scenes"
+msgstr "Søk i scener"
+
+msgctxt "#30038"
+msgid "Favourite tags"
+msgstr "Favoritt-tagger"
+
+msgctxt "#30039"
+msgid "Add to favourites"
+msgstr "Legg til i favoritter"
+
+msgctxt "#30040"
+msgid "Remove from favourites"
+msgstr "Fjern fra favoritter"
+
+msgctxt "#30041"
+msgid "Rate…"
+msgstr "Vurder …"
+
+msgctxt "#30042"
+msgid "Performers in scene…"
+msgstr "Utøvere i scenen …"
+
+msgctxt "#30043"
+msgid "No rating"
+msgstr "Ingen vurdering"
+
+msgctxt "#30044"
+msgid "Add or remove favourite performer"
+msgstr "Legg til eller fjern favorittutøver"
+
+msgctxt "#30045"
+msgid "added to favourites"
+msgstr "lagt til i favoritter"
+
+msgctxt "#30046"
+msgid "removed from favourites"
+msgstr "fjernet fra favoritter"
+
+msgctxt "#30047"
+msgid "Resume from"
+msgstr "Fortsett fra"
+
+msgctxt "#30048"
+msgid "Play from beginning"
+msgstr "Spill fra starten"
+
+msgctxt "#30049"
+msgid "Play next scene automatically"
+msgstr "Spill neste scene automatisk"
+
+msgctxt "#30050"
+msgid "1 star"
+msgstr "1 stjerne"
+
+msgctxt "#30051"
+msgid "{} stars"
+msgstr "{} stjerner"
+
+msgctxt "#30052"
+msgid "favourite"
+msgstr "favoritt"
+
+msgctxt "#30053"
+msgid "Show scenes"
+msgstr "Vis scener"
+
+msgctxt "#30054"
+msgid "Information"
+msgstr "Informasjon"
+
+msgctxt "#30055"
+msgid "Aliases"
+msgstr "Alias"
+
+msgctxt "#30056"
+msgid "Born"
+msgstr "Født"
+
+msgctxt "#30057"
+msgid "Died"
+msgstr "Død"
+
+msgctxt "#30058"
+msgid "Country"
+msgstr "Land"
+
+msgctxt "#30059"
+msgid "Ethnicity"
+msgstr "Etnisitet"
+
+msgctxt "#30060"
+msgid "Hair colour"
+msgstr "Hårfarge"
+
+msgctxt "#30061"
+msgid "Eye colour"
+msgstr "Øyenfarge"
+
+msgctxt "#30062"
+msgid "Height"
+msgstr "Høyde"
+
+msgctxt "#30063"
+msgid "Measurements"
+msgstr "Mål"
+
+msgctxt "#30064"
+msgid "Career"
+msgstr "Karriere"
+
+msgctxt "#30065"
+msgid "Tattoos"
+msgstr "Tatoveringer"
+
+msgctxt "#30066"
+msgid "Piercings"
+msgstr "Piercinger"

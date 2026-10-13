@@ -6,6 +6,10 @@
     </category>
     <category label="30014">
         <setting id="res" type="select" label="30015" values="Original|4k|FHD|720p|SD" default="Original"/>
+        <setting id="autoplay" type="bool" label="30049" default="false"/>
+    </category>
+    <category label="30035">
+        <setting id="page_size" type="enum" label="30034" values="20|40|60|100" default="1"/>
     </category>
 
 </settings>

@@ -26,24 +26,35 @@ class SceneMarkerListing(Listing):
         if browse == 'scene_tags':
             return TagItem(self._client, 'scene_markers', type='scene_tags', label=local.get_localized(30012))
 
-    def _create_items(self, criterion: dict, sort_field: str, sort_dir: int, params: dict):
+    def sort_options(self):
+        return [
+            (local.get_localized(30025), 'title', 'asc'),
+            (local.get_localized(30026), 'created_at', 'desc'),
+            (local.get_localized(30020), 'random', 'asc'),
+        ]
+
+    def _create_items(self, criterion: dict, sort_field: str, sort_dir: str, params: dict, page=1, per_page=40):
         if 'scene' in params:
             scene = self._client.find_scene(params['scene'])
 
-            self._set_title('{} {}'.format(local.get_localized(30011), scene['title']))
+            self._set_title('{} {}'.format(local.get_localized(30011), self.scene_title(scene)))
             markers = scene['scene_markers']
+            count = len(markers)
         else:
-            (_, markers) = self._client.find_scene_markers(criterion, sort_field, sort_dir)
+            (count, markers) = self._client.find_scene_markers(criterion, sort_field, sort_dir, page=page,
+                                                               per_page=per_page, q=params.get('q'))
 
+        sort_menu = [] if 'scene' in params else self._context_menu(params)
         items = []
         for marker in markers:
-            title = '{} - {}'.format(marker['title'], marker['primary_tag']['name'])
+            title = '{} - {}'.format(marker['title'] or self.scene_title(marker['scene']), marker['primary_tag']['name'])
             item = self._create_item(marker['scene'], title=title, screenshot=marker['screenshot'])
             url = self._create_play_url(marker['scene']['id'])
 
             duration = marker['scene']['files'][0]['duration']
             item.setProperty('StartPercent', str(round(marker['seconds'] / duration * 100, 2)))
+            item.addContextMenuItems(sort_menu)
 
             items.append((item, url))
 
-        return items
+        return count, items

@@ -59,3 +59,39 @@ support. As an alternative you can edit the settings file manually.
 2. Open file `addon_data/plugin.video.stash/settings.xml`
 3. Change line `<setting id="api_key" default="true" />` to `<setting
    id="api_key">[your API Key]</setting>`
+
+## Playback reporting
+Playback in Kodi is reported back to Stash the same way Stash' own player
+does it: the play count is incremented once the *Minimum Play Percent* from
+Stash' interface settings is reached, and the resume point and play duration
+are saved while playing. Disable *Track Activity* in Stash to turn this off.
+
+## O-counter
+Use *Increment O-counter* in a scene's context menu. To increment it for the
+scene that is currently playing, bind a key in a
+[keymap](https://kodi.wiki/view/Keymap), for example
+`userdata/keymaps/stash.xml`:
+
+```xml
+<keymap>
+  <FullscreenVideo>
+    <keyboard>
+      <o>RunPlugin(plugin://plugin.video.stash/?increment_o)</o>
+    </keyboard>
+  </FullscreenVideo>
+</keymap>
+```
+
+## Performers
+Use *Performers in scene…* in a scene's context menu to show a performer's
+scenes, show information about the performer or add/remove the performer as
+favourite. Performer listings have *Information* in their context menu.
+
+Known limitations, caused by how Kodi's information dialog works for add-on
+items:
+
+- Selecting a performer in the cast list of a scene's information dialog
+  searches Kodi's own video library, which does not contain Stash scenes, so
+  nothing is found. Use *Performers in scene…* instead.
+- The play button in a performer's information dialog does nothing useful;
+  use *Show scenes* instead.
